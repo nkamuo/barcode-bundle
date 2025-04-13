@@ -1,0 +1,98 @@
+<?php
+
+namespace Nkamuo\tests;
+
+use Nkamuo\Barcode\Storage\HashStorageInterface;
+use PDO;
+use PDOException;
+
+class SQLiteKeyValueStorage implements HashStorageInterface
+{
+    private PDO $connection;
+
+    /**
+     * Constructor initializes the SQLite database connection and ensures the table exists.
+     *
+     * @param string $dbFile Path to the SQLite database file.
+     */
+    public function __construct(string $dbFile = 'storage.db')
+    {
+        try {
+            $this->connection = new PDO("sqlite:{$dbFile}");
+            // Set PDO to throw exceptions on error
+            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            // Create the key-value store table if it doesn't already exist
+            $this->createTable();
+        } catch (PDOException $e) {
+            throw new \RuntimeException('Failed to connect to the SQLite database: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get a value by its key.
+     */
+    public function get(string $key): mixed
+    {
+        $stmt = $this->connection->prepare('SELECT value FROM store WHERE key = :key');
+        $stmt->execute([':key' => $key]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? unserialize($result['value']) : null;
+    }
+
+    /**
+     * Save or update a value by its key.
+     */
+    public function set(string $key, mixed $value): void
+    {
+        $stmt = $this->connection->prepare('REPLACE INTO store (key, value) VALUES (:key, :value)');
+        $stmt->execute([
+            ':key' => $key,
+            ':value' => serialize($value), // Serialize to store complex data
+        ]);
+    }
+
+    /**
+     * Delete a key-value pair.
+     */
+    public function delete(string $key): bool
+    {
+        $stmt = $this->connection->prepare('DELETE FROM store WHERE key = :key');
+        $stmt->execute([':key' => $key]);
+
+        return $stmt->rowCount() > 0;
+    }
+
+    /**
+     * Check if a key exists.
+     */
+    public function has(string $key): bool
+    {
+        $stmt = $this->connection->prepare('SELECT 1 FROM store WHERE key = :key');
+        $stmt->execute([':key' => $key]);
+
+        return (bool) $stmt->fetchColumn();
+    }
+
+    /**
+     * Clear all key-value pairs.
+     */
+    public function clear(): void
+    {
+        $this->connection->exec('DELETE FROM store');
+    }
+
+    /**
+     * Create the key-value store table if it doesn't exist.
+     */
+    private function createTable(): void
+    {
+        $this->connection->exec('
+            CREATE TABLE IF NOT EXISTS store (
+                key TEXT PRIMARY KEY,
+                value BLOB
+            )
+        ');
+    }
+}
