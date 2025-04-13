@@ -36,7 +36,7 @@ services:
     public: true
 
   barcode.repository.default:
-    class: Nkamuo\Barcode\Decoder\InMemoryBarcodeRepository
+    class: Nkamuo\Barcode\Repository\InMemoryBarcodeRepository
     public: true
 
   # Default Processor
