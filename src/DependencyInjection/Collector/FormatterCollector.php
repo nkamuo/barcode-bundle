@@ -1,26 +1,27 @@
 <?php
 
-namespace Nkamuo\Barcode\Service;
+namespace Nkamuo\Barcode\DependencyInjection\Collector;
 
-use Nkamuo\Barcode\Formatter\FormatterInterface;
+use Nkamuo\Barcode\Formatter\BarcodeFormatterInterface;
 
 class FormatterCollector
 {
     /**
-     * @var FormatterInterface[]
+     * @var BarcodeFormatterInterface[]
      */
     private array $formatters = [];
 
     /**
      * Add a formatter to the collection.
      */
-    public function addFormatter(FormatterInterface $formatter): void
+    public function addFormatter(BarcodeFormatterInterface $formatter): void
     {
         $this->formatters[] = $formatter;
     }
 
     /**
      * Retrieve all registered formatters.
+     * @return BarcodeFormatterInterface[]
      */
     public function getFormatters(): array
     {

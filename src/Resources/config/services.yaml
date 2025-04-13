@@ -1,0 +1,72 @@
+services:
+  # Chain services
+  barcode.formatter.default:
+    class: Nkamuo\Barcode\Formatter\ChainBarcodeFormatter
+    public: true
+
+  barcode.encoder.default:
+    class: Nkamuo\Barcode\Encoder\ChainBarcodeEncoder
+    public: true
+
+  barcode.decoder.default:
+    class: Nkamuo\Barcode\Decoder\ChainBarcodeDecoder
+    public: true
+
+  barcode.generator.default:
+    class: Nkamuo\Barcode\Generator\ChainBarcodeGenerator
+    public: true
+
+  barcode.factory.default:
+    class: Nkamuo\Barcode\Factory\BarcodeFactory
+    public: true
+
+  barcode.repository.default:
+    class: Nkamuo\Barcode\Decoder\InMemoryBarcodeRepository
+    public: true
+
+  # Default Processor
+  barcode.processor.default:
+    class: Nkamuo\Barcode\Processor\BarcodeProcessor
+    arguments:
+      $formatter: "@barcode.formatter.default"
+      $encoder: "@barcode.encoder.default"
+      $decoder: "@barcode.decoder.default"
+      $generator: "@barcode.generator.default"
+      $repository: "@barcode.repository.default"
+#  # Example tagged services
+#  App\Formatter\SomeFormatter:
+#    tags:
+#      - { name: 'barcode.formatter', processor: 'default', priority: 10 }
+#
+#  App\Encoder\SomeEncoder:
+#    tags:
+#      - { name: 'barcode.encoder', processor: 'default', priority: 5 }
+#
+#  App\Decoder\SomeDecoder:
+#    tags:
+#      - { name: 'barcode.decoder', processor: 'default', priority: 0 }
+
+#services:
+#  # Automatically load all services in this bundle's namespace
+#  Nkamuo\Barcode\:
+#    resource: '../*'
+#    exclude: '../{DependencyInjection,Tests,Resources}'
+#
+#  # Tag services so they can be prioritized or customized
+#  Nkamuo\Barcode\Formatter\FormatterInterface:
+#    tags: ['barcode.formatter']
+#
+#  Nkamuo\Barcode\Encoder\EncoderInterface:
+#    tags: ['barcode.encoder']
+#
+#  Nkamuo\Barcode\Decoder\DecoderInterface:
+#    tags: ['barcode.decoder']
+#
+#  Nkamuo\Barcode\Generator\GeneratorInterface:
+#    tags: ['barcode.generator']
+#
+#  Nkamuo\Barcode\Repository\BarcodeRepositoryInterface:
+#    autowire: true
+#
+#  Nkamuo\Barcode\Storage\HashStorageInterface:
+#    autowire: true

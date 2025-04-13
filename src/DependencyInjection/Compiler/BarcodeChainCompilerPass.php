@@ -5,6 +5,7 @@ namespace Nkamuo\Barcode\DependencyInjection\Compiler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\Definition;
 
 class BarcodeChainCompilerPass implements CompilerPassInterface
 {
@@ -17,32 +18,46 @@ class BarcodeChainCompilerPass implements CompilerPassInterface
         'barcode.repository' => 'Nkamuo\Barcode\Repository\ChainBarcodeRepository',
     ];
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
-        foreach ($this->chainServices as $tag => $class) {
-            // Process only if the chain class exists
-            if (!$container->hasDefinition($class)) {
+        foreach ($this->chainServices as $tag => $serviceClass) {
+            // Skip if the chain service does not exist
+            if (!$container->hasDefinition($serviceClass)) {
                 continue;
             }
 
-            $chainService = $container->findDefinition($class);
+            $chainService = $container->getDefinition($serviceClass);
+
+            // Collect tagged services
             $taggedServices = $container->findTaggedServiceIds($tag);
+
+            // Group tagged services by processor key or default
+            $servicesByProcessor = [];
 
             foreach ($taggedServices as $id => $tags) {
                 foreach ($tags as $attributes) {
-                    // Check for a specific processor in the tag
                     $processor = $attributes['processor'] ?? 'default';
+                    if (!isset($servicesByProcessor[$processor])) {
+                        $servicesByProcessor[$processor] = [];
+                    }
+                    $servicesByProcessor[$processor][] = new Reference($id);
+                }
+            }
 
-                    // Add the tagged service to the corresponding chain class
-                    if ($processor === 'default') {
-                        $chainService->addMethodCall('add' . ucfirst(rtrim(explode('.', $tag)[1], 's')), [new Reference($id)]);
+            // Process each processor group and pass tagged services to constructor
+            foreach ($servicesByProcessor as $processor => $serviceReferences) {
+                $processorServiceId = sprintf('barcode.processor.%s', $processor);
+
+                // If it's the default processor, use the regular chain service definition
+                if ($processor === 'default') {
+                    $chainService->setArguments([$serviceReferences]);
+                } else {
+                    // If a specific processor is defined, create or modify its chain service definition
+                    if ($container->hasDefinition($processorServiceId)) {
+                        $processorDefinition = $container->getDefinition($processorServiceId);
+                        $processorDefinition->setArguments([$serviceReferences]);
                     } else {
-                        // Handle services bound to a specific processor
-                        $processorService = sprintf('barcode.processor.%s', $processor);
-                        if ($container->hasDefinition($processorService)) {
-                            $processorDef = $container->findDefinition($processorService);
-                            $processorDef->addMethodCall('add' . ucfirst(rtrim(explode('.', $tag)[1], 's')), [new Reference($id)]);
-                        }
+                        $container->setDefinition($processorServiceId, new Definition($serviceClass, [$serviceReferences]));
                     }
                 }
             }
