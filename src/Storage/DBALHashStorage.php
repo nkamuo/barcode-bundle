@@ -19,7 +19,7 @@ class DBALHashStorage implements HashStorageInterface
      * @param bool $autoCreateTable Whether to create the table if it doesn't exist.
      * @throws Exception
      */
-    public function __construct(Connection $connection, array $config = [],  string $tableName = 'store', bool $autoCreateTable = true)
+    public function __construct(Connection $connection, array $config = [],  string $tableName = 'barcode_hash_table', bool $autoCreateTable = true)
     {
         $this->connection = $connection;//DriverManager::getConnection($dbConfig);
         $this->tableName = $tableName;

@@ -4,6 +4,7 @@ namespace Nkamuo\Barcode;
 
 use Nkamuo\Barcode\DependencyInjection\BarcodeExtension;
 use Nkamuo\Barcode\DependencyInjection\Compiler\BarcodeChainCompilerPass;
+use Nkamuo\Barcode\DependencyInjection\Compiler\DBALHashStorageCompilerPass;
 use Nkamuo\Barcode\DependencyInjection\Compiler\DecoderCompilerPass;
 use Nkamuo\Barcode\DependencyInjection\Compiler\EncoderCompilerPass;
 use Nkamuo\Barcode\DependencyInjection\Compiler\FormatterCompilerPass;
@@ -24,6 +25,7 @@ class BarcodeBundle extends Bundle
         $container->addCompilerPass(new EncoderCompilerPass());
         $container->addCompilerPass(new DecoderCompilerPass());
         $container->addCompilerPass(new GeneratorCompilerPass());
+        $container->addCompilerPass(new DBALHashStorageCompilerPass());
     }
 
     protected function getContainerExtensionClass(): string
