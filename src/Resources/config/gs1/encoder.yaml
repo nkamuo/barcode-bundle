@@ -6,7 +6,7 @@ services:
 
   barcode.encoder.gs1.qrcode:
       public: true
-      class: Nkamuo\Barcode\Encoder\GS1QRCodeEncoder
+      class: Nkamuo\Barcode\Encoder\GS1\GS1QRCodeEncoder
       tags:
           - name: barcode.encoder
           - name: barcode.encoder
@@ -14,7 +14,7 @@ services:
 
   barcode.encoder.gs1.complex_barcode:
       public: true
-      class: Nkamuo\Barcode\Encoder\GS1ComplexBarcodeEncoder
+      class: Nkamuo\Barcode\Encoder\GS1\GS1ComplexBarcodeEncoder
       tags:
         - name: barcode.encoder
         - name: barcode.encoder
