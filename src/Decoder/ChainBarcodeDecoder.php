@@ -5,7 +5,7 @@ use Nkamuo\Barcode\Factory\BarcodeFactoryInterface;
 use Nkamuo\Barcode\Model\BarcodeInterface;
 use Nkamuo\Barcode\Model\WritableBarcodeInterface;
 
-class ChainBarcodeDecorder implements BarcodeDecoderInterface{
+class ChainBarcodeDecoder implements BarcodeDecoderInterface{
 
     public function __construct(
         private readonly iterable $decoders,

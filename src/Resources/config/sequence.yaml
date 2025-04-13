@@ -1,5 +1,10 @@
 services:
-    barcode.sequence.generator.default:
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+  barcode.sequence.generator.default:
       public: true
       class: Nkamuo\Barcode\Sequence\SequenceGenerator
       tags:

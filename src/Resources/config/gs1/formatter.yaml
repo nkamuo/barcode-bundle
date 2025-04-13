@@ -1,12 +1,17 @@
 services:
-    barcode.formatter.gs1.data:
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+  barcode.formatter.gs1.data:
       class: Nkamuo\Barcode\Formatter\DataBarcodeFormatter
       tags:
           - name: barcode.formatter
           - name: barcode.formatter
             processor: gs1
 
-    barcode.formatter.gs1.readable_label:
+  barcode.formatter.gs1.readable_label:
       class: Nkamuo\Barcode\Formatter\ReadableLabelBarcodeFormatter
       tags:
         - name: barcode.formatter

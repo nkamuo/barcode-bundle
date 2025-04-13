@@ -8,7 +8,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 use Endroid\QrCode\Writer\ConsoleWriter;
 use Endroid\QrCode\Writer\PngWriter;
 use Nkamuo\Barcode\BarcodeProcessor;
-use Nkamuo\Barcode\Decoder\ChainBarcodeDecorder;
+use Nkamuo\Barcode\Decoder\ChainBarcodeDecoder;
 use Nkamuo\Barcode\Decoder\GS1\GS1ComplexBarcodeDecoder;
 use Nkamuo\Barcode\Decoder\GS1\GS1SimpleBarcodeDecoder;
 use Nkamuo\Barcode\Encoder\ChainBarcodeEncoder;
@@ -57,7 +57,7 @@ $encoder = new ChainBarcodeEncoder(
     ]
 );
 
-$decoder = new ChainBarcodeDecorder(
+$decoder = new ChainBarcodeDecoder(
     decoders: [
         new GS1ComplexBarcodeDecoder(),
         new GS1SimpleBarcodeDecoder(),

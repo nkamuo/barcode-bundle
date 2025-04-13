@@ -8,6 +8,12 @@ imports:
   - { resource: './sequence.yaml' }
   - { resource: './storage.yaml' }
 services:
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+
   # Chain services
   barcode.formatter.default:
     class: Nkamuo\Barcode\Formatter\ChainBarcodeFormatter
