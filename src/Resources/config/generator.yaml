@@ -1,0 +1,6 @@
+services:
+    barcode.generator.serial_number:
+      public: true
+      class: Nkamuo\Barcode\Generator\SerialNumberBarcodeGenerator
+      tags:
+          - name: barcode.generator

@@ -1,0 +1,6 @@
+services:
+    barcode.formatter.simple:
+      public: true
+      class: Nkamuo\Barcode\Formatter\BarcodeFormatter
+      tags:
+          - name: barcode.formatter

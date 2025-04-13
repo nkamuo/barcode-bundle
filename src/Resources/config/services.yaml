@@ -1,3 +1,8 @@
+imports:
+  - { resource: './gs1/services.yaml' }
+#  -
+  - { resource: './formatter.yaml' }
+  - { resource: './generator.yaml' }
 services:
   # Chain services
   barcode.formatter.default:
@@ -27,6 +32,7 @@ services:
   # Default Processor
   barcode.processor.default:
     class: Nkamuo\Barcode\BarcodeProcessor
+    public: true
     arguments:
       $formatter: "@barcode.formatter.default"
       $encoder: "@barcode.encoder.default"

@@ -1,0 +1,16 @@
+services:
+    barcode.decoder.gs1.qrcode:
+      public: true
+      class: Nkamuo\Barcode\Decoder\GS1SimpleBarcodeDecoder
+      tags:
+          - name: barcode.decoder
+          - name: barcode.decoder
+            processor: gs1
+
+    barcode.decoder.gs1.complex_barcode:
+      public: true
+      class: Nkamuo\Barcode\Decoder\GS1ComplexBarcodeDecoder
+      tags:
+        - name: barcode.decoder
+        - name: barcode.decoder
+          processor: gs1
