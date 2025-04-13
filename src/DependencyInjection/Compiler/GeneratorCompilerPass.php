@@ -43,7 +43,7 @@ class GeneratorCompilerPass implements CompilerPassInterface
                 }
                 $definition = $container->getDefinition($id);
                 $definition
-                        ->setArgument('generators', $generators);
+                        ->setArgument('$generators', $generators);
             }
     }
 }

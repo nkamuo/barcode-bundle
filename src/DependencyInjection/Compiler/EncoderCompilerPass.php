@@ -43,7 +43,7 @@ class EncoderCompilerPass implements CompilerPassInterface
                 }
                 $definition = $container->getDefinition($id);
                 $definition
-                        ->setArgument('encoders', $encoders);
+                        ->setArgument('$encoders', $encoders);
             }
     }
 }

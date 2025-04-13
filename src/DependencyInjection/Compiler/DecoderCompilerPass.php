@@ -47,8 +47,8 @@ class DecoderCompilerPass implements CompilerPassInterface
                 }
                 $definition = $container->getDefinition($id);
                 $definition
-                        ->setArgument('decoders', $decoders)
-                        ->setArgument('factory', new Reference(self::FACTORY_SERVICE_ID))
+                        ->setArgument('$decoders', $decoders)
+                        ->setArgument('$factory', new Reference(self::FACTORY_SERVICE_ID))
                 ;
             }
     }

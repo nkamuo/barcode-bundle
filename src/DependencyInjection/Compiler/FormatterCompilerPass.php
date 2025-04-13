@@ -43,7 +43,7 @@ class FormatterCompilerPass implements CompilerPassInterface
                 }
                 $definition = $container->getDefinition($id);
                 $definition
-                        ->setArgument('formatters', $formatters);
+                        ->setArgument('$formatters', $formatters);
             }
     }
 }
