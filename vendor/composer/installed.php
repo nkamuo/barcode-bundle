@@ -3,7 +3,7 @@
         'name' => 'nkamuo/barcode-bundle',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'bc84bd88432b7d704bf58cdb48561f265e0becaf',
+        'reference' => '19f82a418e868795d47ae7c531ee6ce0096ac1f4',
         'type' => 'symfony-bundle',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(
@@ -42,7 +42,7 @@
         'nkamuo/barcode-bundle' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'bc84bd88432b7d704bf58cdb48561f265e0becaf',
+            'reference' => '19f82a418e868795d47ae7c531ee6ce0096ac1f4',
             'type' => 'symfony-bundle',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(
@@ -200,15 +200,6 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'symfony/polyfill-uuid' => array(
-            'pretty_version' => 'v1.31.0',
-            'version' => '1.31.0.0',
-            'reference' => '21533be36c24be3f4b1669c4725c7d1d2bab4ae2',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../symfony/polyfill-uuid',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
         'symfony/service-contracts' => array(
             'pretty_version' => 'v3.5.1',
             'version' => '3.5.1.0',
@@ -223,15 +214,6 @@
             'provided' => array(
                 0 => '1.1|2.0|3.0',
             ),
-        ),
-        'symfony/uid' => array(
-            'pretty_version' => 'v7.2.0',
-            'version' => '7.2.0.0',
-            'reference' => '2d294d0c48df244c71c105a169d0190bfb080426',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../symfony/uid',
-            'aliases' => array(),
-            'dev_requirement' => false,
         ),
         'symfony/var-dumper' => array(
             'pretty_version' => 'v7.2.3',
