@@ -10,3 +10,15 @@ services:
       tags:
           - name: barcode.storage
           - name: barcode.storage.hash
+
+
+  barcode.storage.hash.sequence:
+    public: true
+    class: Nkamuo\Barcode\Storage\ScopedHashStorage
+    arguments:
+      $storage: '@barcode.storage.hash.default'
+      $prefix: 'sequence'
+      $separator: '.'
+    tags:
+      - name: barcode.storage
+      - name: barcode.storage.hash

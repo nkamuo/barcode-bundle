@@ -37,5 +37,8 @@ class DBALHashStorageCompilerPass implements CompilerPassInterface
                 ->setArgument('$autoCreateTable', true)
             ;
         }
+
+
+
     }
 }
