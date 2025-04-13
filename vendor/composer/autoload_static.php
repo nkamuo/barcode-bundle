@@ -35,6 +35,7 @@ class ComposerStaticInitf23edb42c89f02ec3cbd882b0a8ee5fc
             'Psr\\Log\\' => 8,
             'Psr\\EventDispatcher\\' => 20,
             'Psr\\Container\\' => 14,
+            'Psr\\Cache\\' => 10,
             'Picqer\\Barcode\\' => 15,
         ),
         'N' => 
@@ -51,6 +52,8 @@ class ComposerStaticInitf23edb42c89f02ec3cbd882b0a8ee5fc
         ),
         'D' => 
         array (
+            'Doctrine\\Deprecations\\' => 22,
+            'Doctrine\\DBAL\\' => 14,
             'DASPRiD\\Enum\\' => 13,
         ),
         'B' => 
@@ -120,6 +123,10 @@ class ComposerStaticInitf23edb42c89f02ec3cbd882b0a8ee5fc
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
+        'Psr\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/cache/src',
+        ),
         'Picqer\\Barcode\\' => 
         array (
             0 => __DIR__ . '/..' . '/picqer/php-barcode-generator/src',
@@ -135,6 +142,14 @@ class ComposerStaticInitf23edb42c89f02ec3cbd882b0a8ee5fc
         'Endroid\\QrCode\\' => 
         array (
             0 => __DIR__ . '/..' . '/endroid/qr-code/src',
+        ),
+        'Doctrine\\Deprecations\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/deprecations/src',
+        ),
+        'Doctrine\\DBAL\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/dbal/src',
         ),
         'DASPRiD\\Enum\\' => 
         array (

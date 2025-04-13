@@ -3,7 +3,7 @@
         'name' => 'nkamuo/barcode-bundle',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'ec93085adda3240dd20645b46a0789507a03ab45',
+        'reference' => 'c1d280f58564b6afd7fc2ec543d6f458a92b8da3',
         'type' => 'symfony-bundle',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(
@@ -30,6 +30,24 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'doctrine/dbal' => array(
+            'pretty_version' => '4.2.3',
+            'version' => '4.2.3.0',
+            'reference' => '33d2d7fe1269b2301640c44cf2896ea607b30e3e',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../doctrine/dbal',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'doctrine/deprecations' => array(
+            'pretty_version' => '1.1.5',
+            'version' => '1.1.5.0',
+            'reference' => '459c2f5dd3d6a4633d3b5f46ee2b1c40f57d3f38',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../doctrine/deprecations',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'endroid/qr-code' => array(
             'pretty_version' => '6.0.7',
             'version' => '6.0.7.0',
@@ -51,7 +69,7 @@
         'nkamuo/barcode-bundle' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'ec93085adda3240dd20645b46a0789507a03ab45',
+            'reference' => 'c1d280f58564b6afd7fc2ec543d6f458a92b8da3',
             'type' => 'symfony-bundle',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(
@@ -65,6 +83,15 @@
             'reference' => '3ef0b26ebd3996e8bb9e90fa2059a67d2e482b3e',
             'type' => 'library',
             'install_path' => __DIR__ . '/../picqer/php-barcode-generator',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'psr/cache' => array(
+            'pretty_version' => '3.0.0',
+            'version' => '3.0.0.0',
+            'reference' => 'aa5030cfa5405eccfdcb1083ce040c2cb8d253bf',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../psr/cache',
             'aliases' => array(),
             'dev_requirement' => false,
         ),

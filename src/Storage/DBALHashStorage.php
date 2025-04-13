@@ -64,7 +64,7 @@ class DBALHashStorage implements HashStorageInterface
             [$key]
         );
 
-        return $result !== false ? unserialize($result) : null;
+        return $result !== false ? json_decode($result, associative: true) : null;
     }
 
     /**
@@ -82,7 +82,7 @@ class DBALHashStorage implements HashStorageInterface
                 'REPLACE INTO %s (`key`, `value`) VALUES (?, ?)',
                 $this->tableName
             ),
-            [$key, serialize($value)]
+            [$key, json_encode($value)]
         );
     }
 
@@ -134,7 +134,7 @@ class DBALHashStorage implements HashStorageInterface
 
         $data = [];
         foreach ($result as $row) {
-            $data[$row['key']] = unserialize($row['value']);
+            $data[$row['key']] = json_decode($row['value'], associative: true);
         }
 
         return $data;

@@ -16,7 +16,8 @@
         "endroid/qr-code": "^6.0",
         "symfony/dependency-injection": "^7",
         "symfony/http-kernel": "^7",
-        "lamoda/gs1-barcode-parser": "^1.1"
+        "lamoda/gs1-barcode-parser": "^1.1",
+        "doctrine/dbal": "*"
     },
     "autoload": {
         "psr-4": {
