@@ -14,16 +14,23 @@ class ScopedHashStorage implements HashStorageInterface
      */
     private string $prefix;
 
+
+    /**
+     * @var string The seperator to place between the namespace and the keys.
+     */
+    private string $separator;
+
     /**
      * Constructor.
      *
      * @param HashStorageInterface $storage The underlying storage to wrap.
      * @param string $prefix The prefix to apply to keys.
      */
-    public function __construct(HashStorageInterface $storage, string $prefix)
+    public function __construct(HashStorageInterface $storage, string $prefix, string $separator = '.')
     {
         $this->storage = $storage;
         $this->prefix = $prefix;
+        $this->separator = $separator;
     }
 
     public function get(string $key): mixed
@@ -82,6 +89,6 @@ class ScopedHashStorage implements HashStorageInterface
      */
     private function scopedKey(string $key): string
     {
-        return "{$this->prefix}_{$key}";
+        return "{$this->prefix}{$this->separator}{$key}";
     }
 }

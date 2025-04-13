@@ -40,20 +40,22 @@ class GS1ComplexBarcodeEncoder implements BarcodeEncoderInterface{
      * @inheritDoc
      */
     public function supports(BarcodeInterface $barcode, string $symbol, string|null $format = null, array $context = []): bool {
+        
+        // return true;
         // Check if the barcode is a GS1 barcode
-        if ($barcode->getStandard() !== 'GS1') {
+        if ( ($standard = $barcode->getStandard()) && strtoupper($standard) !== 'GS1') {
             return false;
         }
 
         // Check if the symbol is supported
-        $supportedSymbols = ['QR', 'EAN-13', 'UPC', 'Code128'];
-        if (!in_array($symbol, $supportedSymbols)) {
+        $supportedSymbols = ['QR', 'EAN-13', 'UPC', 'CODE128'];
+        if (!in_array(strtoupper($symbol), $supportedSymbols)) {
             return false;
         }
 
         // Check if the format is supported
         $supportedFormats = ['PNG', 'SVG', 'PDF'];
-        if ($format !== null && !in_array($format, $supportedFormats)) {
+        if ($format !== null && !in_array(strtoupper($format), $supportedFormats)) {
             return false;
         }
 

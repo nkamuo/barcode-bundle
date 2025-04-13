@@ -7,6 +7,7 @@ use Nkamuo\Barcode\Exception\BarcodeDecodeException;
 use Nkamuo\Barcode\Exception\BarcodeEncodeException;
 use Nkamuo\Barcode\Exception\BarcodeGenerationException;
 use Nkamuo\Barcode\Factory\BarcodeFactoryInterface;
+use Nkamuo\Barcode\Formatter\BarcodeFormatterInterface;
 use Nkamuo\Barcode\Generator\BarcodeGeneratorInterface;
 use Nkamuo\Barcode\Model\BarcodeInterface;
 use Nkamuo\Barcode\Repository\BarcodeRepositoryInterface;
@@ -20,6 +21,7 @@ class BarcodeProcessor  implements BarcodeProcessorInterface{
         private readonly BarcodeEncoderInterface $encoder,
         private readonly BarcodeDecoderInterface $decoder,
         private readonly BarcodeGeneratorInterface $generator,
+        private readonly BarcodeFormatterInterface $formatter,
         private readonly BarcodeRepositoryInterface $repository,
     ){
 
@@ -31,8 +33,8 @@ class BarcodeProcessor  implements BarcodeProcessorInterface{
      */
     public function decode( string $data, string|null $symbol = null, string|null $format = null, array $context = []): BarcodeInterface {
         $barcode = $this->factory->createWritable($context);
-        $this->decoder->decode($barcode, $data, $symbol, $format, $context);
-        return $barcode;
+        return $this->decoder->decode($barcode, $data, $symbol, $format, $context);
+        // return $barcode;
     }
     
     /**
@@ -57,8 +59,7 @@ class BarcodeProcessor  implements BarcodeProcessorInterface{
         }
 
         $barcode = $this->factory->createWritable($context);
-        $this->generator->generate($barcode, $context);
-        return $barcode;
+        return $this->generator->generate($barcode, $context);
     }
 
     /**

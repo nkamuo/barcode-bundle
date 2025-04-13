@@ -21,7 +21,7 @@ class SerialNumberBarcodeGenerator implements BarcodeGeneratorInterface
 
     public const SEQUENCE_KEY = 'sequence_number';
 
-    public const DEFAULT_PAD_LENGTH = 0;
+    public const DEFAULT_PAD_LENGTH = 8;
 
     public function __construct(
         private readonly SequenceGeneratorInterface $sequenceGenerator,
@@ -54,7 +54,8 @@ class SerialNumberBarcodeGenerator implements BarcodeGeneratorInterface
      */
     public function supports(array $context): bool
     {
-        return ($context[self::TYPE_CONFIG_KEY] ?? null) === self::SEQUENCE_KEY;
+        return true;
+        // return ($context[self::TYPE_CONFIG_KEY] ?? null) === self::SEQUENCE_KEY;
     }
 
 

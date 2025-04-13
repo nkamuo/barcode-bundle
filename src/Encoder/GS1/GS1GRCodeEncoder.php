@@ -2,6 +2,7 @@
 namespace Nkamuo\Barcode\Encoder\GS1;
 
 use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\ConsoleWriter;
 use Endroid\QrCode\Writer\WriterInterface;
 use InvalidArgumentException;
 use Nkamuo\Barcode\Encoder\BarcodeEncoderInterface;
@@ -28,6 +29,10 @@ class GS1GRCodeEncoder implements BarcodeEncoderInterface{
         $data = $this->formatter->format($barcode, $format, $context);
         $qrcode = new QrCode($data);
         $result = $this->writer->write($qrcode, options: []);
+        if($this->writer instanceof ConsoleWriter){
+            // If the writer is ConsoleWriter, we need to render it to a string
+            return $result->getString();
+        }
         return $result->getDataUri();
     }
     
@@ -35,20 +40,21 @@ class GS1GRCodeEncoder implements BarcodeEncoderInterface{
      * @inheritDoc
      */
     public function supports(BarcodeInterface $barcode, string $symbol, string|null $format = null, array $context = []): bool {
+        // return true;
         // Check if the barcode is a GS1 barcode
-        if ($barcode->getStandard() !== 'GS1') {
+        if ( ($standard = $barcode->getStandard()) && strtoupper($standard) !== 'GS1') {
             return false;
         }
 
         // Check if the symbol is supported
         $supportedSymbols = ['QR',];
-        if (!in_array($symbol, $supportedSymbols)) {
+        if (!in_array(strtoupper($symbol), $supportedSymbols)) {
             return false;
         }
 
         // Check if the format is supported
         $supportedFormats = ['PNG', 'SVG', 'PDF'];
-        if ($format !== null && !in_array($format, $supportedFormats)) {
+        if ($format !== null && !in_array(strtoupper($format), $supportedFormats)) {
             return false;
         }
 

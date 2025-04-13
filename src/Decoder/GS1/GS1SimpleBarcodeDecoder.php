@@ -1,11 +1,13 @@
 <?php
+
 namespace Nkamuo\Barcode\Decoder\GS1;
 
 use Nkamuo\Barcode\Decoder\BarcodeDecoderInterface;
 use Nkamuo\Barcode\Model\BarcodeInterface;
 use Nkamuo\Barcode\Model\WritableBarcodeInterface;
 
-class GS1SimpleBarcodeDecoder  implements BarcodeDecoderInterface{
+class GS1SimpleBarcodeDecoder  implements BarcodeDecoderInterface
+{
 
 
     public const TYPE_TO_AI_MAPS = [
@@ -20,7 +22,7 @@ class GS1SimpleBarcodeDecoder  implements BarcodeDecoderInterface{
         'GSIN' => '402',
     ];
 
-   
+
     public function decode(WritableBarcodeInterface $barcode, string $data, string|null $symbol = null, string|null $format = null, array $context = []): BarcodeInterface
     {
         $type = GS1CodeValidator::detectAndValidate($data);
@@ -32,8 +34,9 @@ class GS1SimpleBarcodeDecoder  implements BarcodeDecoderInterface{
         if ($ai === null) {
             throw new \InvalidArgumentException("Unsupported GS1 barcode type: $type");
         }
-        
+
         return $barcode
+            ->setValue($data)
             ->setType($type)
             ->setStandard('GS1')
             ->addMetadata('standard', 'GS1')
@@ -42,14 +45,15 @@ class GS1SimpleBarcodeDecoder  implements BarcodeDecoderInterface{
             // 
             ->addAttribute($ai, $data)
             ->end()
-            ;
+        ;
     }
-   
-    
+
+
     /**
      * @inheritDoc
      */
-    public function getSupportedFormats(): array {
+    public function getSupportedFormats(): array
+    {
         return [
             'GS1-128',
             'GS1-Databar',
@@ -59,11 +63,12 @@ class GS1SimpleBarcodeDecoder  implements BarcodeDecoderInterface{
             'GS1-EAN',
         ];
     }
-    
+
     /**
      * @inheritDoc
      */
-    public function getSupportedStandards(): array {
+    public function getSupportedStandards(): array
+    {
         return [
             'GS1',
             'ISO/IEC 15420',
@@ -73,11 +78,12 @@ class GS1SimpleBarcodeDecoder  implements BarcodeDecoderInterface{
             'ISO/IEC 18004',
         ];
     }
-    
+
     /**
      * @inheritDoc
      */
-    public function getSupportedSymbols(): array {
+    public function getSupportedSymbols(): array
+    {
         return [
             'GS1-128',
             'GS1-Databar',
@@ -87,23 +93,15 @@ class GS1SimpleBarcodeDecoder  implements BarcodeDecoderInterface{
             'GS1-EAN',
         ];
     }
-    
+
     /**
      * @inheritDoc
      */
-    public function supports(string $data, string|null $symbol = null, string|null $format = null, array $context = []): bool {
-        // Check if the barcode is a GS1 barcode
-        if ($format !== null && !in_array($format, $this->getSupportedFormats())) {
-            return false;
-        }
-
-        // Check if the symbol is supported
-        if ($symbol !== null && !in_array($symbol, $this->getSupportedSymbols())) {
-            return false;
-        }
+    public function supports(string $data, string|null $symbol = null, string|null $format = null, array $context = []): bool
+    {
 
         // Check if the standard is supported
-        if ($context['standard'] !== null && !in_array($context['standard'], $this->getSupportedStandards())) {
+        if (($context['standard'] ?? null) !== null && !in_array(strtoupper($context['standard']), $this->getSupportedStandards())) {
             return false;
         }
 

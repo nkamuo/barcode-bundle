@@ -2,19 +2,55 @@
 
 namespace Nkamuo\Barcode\Decoder\GS1;
 
+use Lamoda\GS1Parser\Constants;
+use Lamoda\GS1Parser\Parser\Parser;
+use Lamoda\GS1Parser\Parser\ParserConfig;
 use Lamoda\GS1Parser\Parser\ParserInterface;
+use Lamoda\GS1Parser\Validator\Validator;
+use Lamoda\GS1Parser\Validator\ValidatorConfig;
 use Lamoda\GS1Parser\Validator\ValidatorInterface;
 use Nkamuo\Barcode\Decoder\BarcodeDecoderInterface;
+use Nkamuo\Barcode\Formatter\GS1\DataBarcodeFormatter;
 use Nkamuo\Barcode\Model\BarcodeInterface;
 use Nkamuo\Barcode\Model\WritableBarcodeInterface;
 
 class GS1ComplexBarcodeDecoder  implements BarcodeDecoderInterface
 {
 
+
+    public const KNOWN_AIS = [
+        '01' => 'Global Trade Item Number (GTIN)',
+        '02' => 'Product Number',
+        '10' => 'Batch or Lot Number',
+        '11' => 'Production Date',
+        '12' => 'Due Date',
+        '13' => 'Packaging Date',
+        '15' => 'Best Before Date',
+        '17' => 'Expiration Date',
+        '20' => 'Item Reference',
+        // Add more AIs as needed
+        '21' => 'Serial Number',
+        '22' => 'Consumer Product Code',
+        '30' => 'Price',
+        '37' => 'Count of Items',
+        '400' => 'Country of Origin',
+        '410' => 'Shipping Container Code',
+        // Assets - Returnable and other types
+    ];
+
+    public const DEFAULT_FUNC_PREFIX_MAP = DataBarcodeFormatter::DEFAULT_FUNC_PREFIX_MAP;
+
+
+    private readonly ParserInterface $parser;
+    private readonly ValidatorInterface $validator;
+
     public function __construct(
-        private readonly ParserInterface $parser,
-        private readonly ValidatorInterface $validator,
-    ) {}
+        ?ParserInterface $parser = null,
+        ?ValidatorInterface $validator = null,
+    ) {
+        $this->parser = $parser ?? new Parser($this->getParserConfig());
+        $this->validator = $validator ?? new Validator($this->parser, $this->getValidatorConfig());
+    }
 
     /**
      * @inheritDoc
@@ -29,28 +65,50 @@ class GS1ComplexBarcodeDecoder  implements BarcodeDecoderInterface
 
         foreach ($ais as $ai => $value) {
             $barcode
-                ->addAttribute($ai, $value)
-                    ;
+                ->addAttribute($ai, $value);
         }
 
         $symbol = $parsedData->type();
 
         $barcode
+            ->setValue($data)
             ->addMetadata('raw', $data)
             ->addMetadata('ais', $ais)
-            ;
-              
-        if($symbol !== 'unknown'){
-            $barcode->setSymbol($symbol)
+        ;
+
+        if ($symbol !== 'unknown') {
+            $barcode
+                ->setSymbol($symbol)
                 ->addMetadata('symbol', $symbol);
         }
 
         return $barcode
-        ->setStandard('GS1')
-        ->addMetadata('standard',  'GS1')
-        ->addMetadata('format', $format);
+            ->setStandard('GS1')
+            ->addMetadata('standard',  'GS1')
+            ->addMetadata('format', $format);
     }
 
+
+    /**
+     * @inheritDoc
+     */
+    public function supports(string $data, string|null $symbol = null, string|null $format = null, array $context = []): bool
+    {
+        // Check if the standard is supported
+        if (($context['standard'] ?? null) !== null && !in_array($context['standard'], $this->getSupportedStandards())) {
+            return false;
+        }
+
+        foreach (self::DEFAULT_FUNC_PREFIX_MAP as $key => $value) {
+            if (str_starts_with($data, $value)) {
+                return true;
+            }
+        }
+        return false;
+
+        // $resolution = $this->validator->validate($data);
+        // return $resolution->isValid();
+    }
 
     /**
      * @inheritDoc
@@ -97,27 +155,22 @@ class GS1ComplexBarcodeDecoder  implements BarcodeDecoderInterface
         ];
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function supports(string $data, string|null $symbol = null, string|null $format = null, array $context = []): bool
+
+
+    protected function getValidatorConfig(array $config = []): ValidatorConfig
     {
-        // Check if the barcode is a GS1 barcode
-        if ($format !== null && !in_array($format, $this->getSupportedFormats())) {
-            return false;
-        }
+        return (new ValidatorConfig())
+            ;
+    }
 
-        // Check if the symbol is supported
-        if ($symbol !== null && !in_array($symbol, $this->getSupportedSymbols())) {
-            return false;
-        }
+    protected function getParserConfig(array $config = []): ParserConfig{
+        return (new ParserConfig())
+            // ->setFnc1PrefixMap(self::DEFAULT_FUNC_PREFIX_MAP)
+            ->setKnownAIs($this->getKnownAIs());
+    }
 
-        // Check if the standard is supported
-        if ($context['standard'] !== null && !in_array($context['standard'], $this->getSupportedStandards())) {
-            return false;
-        }
-
-        $resolution = $this->validator->validate($data);
-        return $resolution->isValid();
+    protected function getKnownAIs(array $config = []): array
+    {
+        return array_map('strval', array_keys(self::KNOWN_AIS));
     }
 }
