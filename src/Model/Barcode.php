@@ -222,4 +222,10 @@ class Barcode implements BarcodeInterface, WritableBarcodeInterface
             metadata: $metadata ?? $this->metadata,
         );
     }
+
+
+    public function __toString(): string
+    {
+        return $this->getValue();
+    }
 }

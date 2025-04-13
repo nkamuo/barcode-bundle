@@ -4,7 +4,7 @@ namespace Nkamuo\Barcode\Model;
 use Nkamuo\Barcode\Exception\BarcodeMetadatKeyNotFound;
 
 
-interface BarcodeInterface{
+interface BarcodeInterface extends \Stringable{
     /**
      * Returns the barcode in formatted form.
      *
