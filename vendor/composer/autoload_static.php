@@ -41,6 +41,10 @@ class ComposerStaticInitf23edb42c89f02ec3cbd882b0a8ee5fc
         array (
             'Nkamuo\\Barcode\\' => 15,
         ),
+        'L' => 
+        array (
+            'Lamoda\\GS1Parser\\' => 17,
+        ),
         'E' => 
         array (
             'Endroid\\QrCode\\' => 15,
@@ -123,6 +127,10 @@ class ComposerStaticInitf23edb42c89f02ec3cbd882b0a8ee5fc
         'Nkamuo\\Barcode\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
+        ),
+        'Lamoda\\GS1Parser\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/lamoda/gs1-barcode-parser/src',
         ),
         'Endroid\\QrCode\\' => 
         array (

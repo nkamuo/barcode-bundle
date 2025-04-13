@@ -3,7 +3,7 @@
         'name' => 'nkamuo/barcode-bundle',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '19f82a418e868795d47ae7c531ee6ce0096ac1f4',
+        'reference' => 'ec93085adda3240dd20645b46a0789507a03ab45',
         'type' => 'symfony-bundle',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(
@@ -39,10 +39,19 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'lamoda/gs1-barcode-parser' => array(
+            'pretty_version' => '1.1.0',
+            'version' => '1.1.0.0',
+            'reference' => '0d015e87f8258dc4caf016948f8eb02a9f8305b4',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../lamoda/gs1-barcode-parser',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'nkamuo/barcode-bundle' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '19f82a418e868795d47ae7c531ee6ce0096ac1f4',
+            'reference' => 'ec93085adda3240dd20645b46a0789507a03ab45',
             'type' => 'symfony-bundle',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(

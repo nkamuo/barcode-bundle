@@ -113,7 +113,7 @@ class DataBarcodeFormatter implements BarcodeFormatterInterface
     private array $fixedLengthAIs = [];
 
     public function __construct(
-        private array $config = [],
+        private readonly array $config = [],
     ) {
         $this->encodableValueCharactersSet = $this->config['encodableValueCharactersSet'] ?? self::DEFAULT_ENCODABLE_VALUE_CHARACTERS_SET;
         $this->fnc1PrefixMap = $this->config['fnc1PrefixMap'] ?? self::DEFAULT_FUNC_PREFIX_MAP;

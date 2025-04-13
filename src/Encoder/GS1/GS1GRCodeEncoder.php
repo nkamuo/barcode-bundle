@@ -3,19 +3,25 @@ namespace Nkamuo\Barcode\Encoder\GS1;
 
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\ConsoleWriter;
+use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Writer\WriterInterface;
 use InvalidArgumentException;
 use Nkamuo\Barcode\Encoder\BarcodeEncoderInterface;
+use Nkamuo\Barcode\Formatter\BarcodeFormatter;
 use Nkamuo\Barcode\Formatter\BarcodeFormatterInterface;
 use Nkamuo\Barcode\Model\BarcodeInterface;
 
 class GS1GRCodeEncoder implements BarcodeEncoderInterface{
 
+    private readonly WriterInterface           $writer;
+    private readonly BarcodeFormatterInterface $formatter;
 
     public function __construct(
-        private readonly WriterInterface           $writer,
-        private readonly BarcodeFormatterInterface $formatter,
+        ?WriterInterface           $writer = null,
+        ?BarcodeFormatterInterface $formatter = null,
         ) {
+        $this->writer = $writer ?? new PngWriter();
+        $this->formatter = $formatter ?? new BarcodeFormatter();
     }
     
     /**

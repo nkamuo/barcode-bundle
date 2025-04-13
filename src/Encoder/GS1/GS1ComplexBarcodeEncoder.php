@@ -1,26 +1,31 @@
 <?php
 namespace Nkamuo\Barcode\Encoder\GS1;
 
-use chillerlan\QRCode\QRCode;
 use Nkamuo\Barcode\Encoder\BarcodeEncoderInterface;
+use Nkamuo\Barcode\Formatter\BarcodeFormatter;
 use Nkamuo\Barcode\Formatter\BarcodeFormatterInterface;
 use Nkamuo\Barcode\Model\BarcodeInterface;
+use Picqer\Barcode\Renderers\PngRenderer;
 use Picqer\Barcode\Renderers\RendererInterface;
 use Picqer\Barcode\Types\TypeCode128;
 use Picqer\Barcode\Types\TypeInterface;
 
 class GS1ComplexBarcodeEncoder implements BarcodeEncoderInterface{
 
+    private readonly TypeInterface             $encoder;
+        private readonly RendererInterface         $renderer;
+        private readonly BarcodeFormatterInterface $formatter;
 
 
     public function __construct(
-        private readonly TypeInterface             $encoder,
-        private readonly RendererInterface         $renderer,
-        private readonly BarcodeFormatterInterface $formatter,
+        ?BarcodeFormatterInterface $formatter = null,
+        ?TypeInterface             $encoder = null,
+        ?RendererInterface         $renderer = null,
     ) {
 
-        // $this->encoder = new TypeCode128();
-        // $this->renderer = $renderer;
+        $this->formatter = $formatter ?? new BarcodeFormatter();
+         $this->encoder = $encoder ?? new TypeCode128();
+         $this->renderer = $renderer ?? new PngRenderer();
     }
     
     /**
