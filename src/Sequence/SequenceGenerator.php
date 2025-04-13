@@ -10,8 +10,14 @@ class SequenceGenerator implements SequenceGeneratorInterface
 
     public function __construct(
         private readonly HashStorageInterface $storage,
+        private readonly int $step = 1,
+        private readonly int $startAt = 1,
         private readonly array $config = [],
     ){
+
+        if($this->startAt < 1) {
+            throw new \InvalidArgumentException('Start at must be greater than 0');
+        }
 
     }
 
@@ -70,11 +76,16 @@ class SequenceGenerator implements SequenceGeneratorInterface
     {
         if($current !== null) {
             $_current = (int)$current;
-            return $_current + 1;
+            return $_current + $this->getStep();
         }{
-            $start = ($this->config['start_at'] ?? 1);
+            $start = ($this->startAt ?? 1);
             return (int)$start;
     }
     }
 
+
+    public function getStep(): int
+    {
+        return $this->step;
+    }
 }
