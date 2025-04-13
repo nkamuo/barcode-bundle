@@ -12,7 +12,7 @@ services:
           - name: barcode.decoder
             processor: gs1
 
-    barcode.decoder.gs1.complex_barcode:
+  barcode.decoder.gs1.complex_barcode:
       public: true
       class: Nkamuo\Barcode\Decoder\GS1ComplexBarcodeDecoder
       tags:
