@@ -14,9 +14,8 @@
         "php": ">=8.1",
         "picqer/php-barcode-generator": "^3.2",
         "endroid/qr-code": "^6.0",
-        "symfony/uid": "^7.2",
-        "symfony/dependency-injection": "^7.2",
-        "symfony/http-kernel": "^7.2"
+        "symfony/dependency-injection": "^7",
+        "symfony/http-kernel": "^7"
     },
     "autoload": {
         "psr-4": {
