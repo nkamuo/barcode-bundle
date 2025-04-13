@@ -12,10 +12,8 @@
     ],
     "require": {
         "php": ">=8.1",
-        "chillerlan/php-qrcode": "^5.0",
         "picqer/php-barcode-generator": "^3.2",
         "endroid/qr-code": "^6.0",
-        "doctrine/orm": "^3.3",
         "symfony/uid": "^7.2",
         "symfony/dependency-injection": "^7.2",
         "symfony/http-kernel": "^7.2"
