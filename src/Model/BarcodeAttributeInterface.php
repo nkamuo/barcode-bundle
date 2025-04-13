@@ -41,10 +41,21 @@ interface BarcodeAttributeInterface{
      */
 
     public function getMetadata(?string $key = null): mixed;
+
+
     /**
-     * Returns the attribute identifier.
-     *
-     * @return string
+     * @param string|null $code
+     * @param string|null $value
+     * @param string|null $label
+     * @param string|null $type
+     * @param array|null $metadata
+     * @return self
      */
-    
+    public function copyWith(
+        ?string $code = null,
+        ?string $value = null,
+        ?string $label = null,
+        ?string $type = null,
+        ?array $metadata = null,
+    ): self;
 }

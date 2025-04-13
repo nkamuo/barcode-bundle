@@ -49,5 +49,15 @@ interface BarcodeInterface{
      * @throws BarcodeMetadatKeyNotFound
      */
     public function getMetadata(?string $key = null): mixed;
+
+
+    public function copyWith(
+        ?string $value = null,
+        ?string $type = null,
+        ?string $standard = null,
+        ?string $symbol = null,
+        ?array $attributes = null,
+        ?array $metadata = null,
+    ): self;
     
 }

@@ -4,7 +4,7 @@ namespace Nkamuo\Barcode\Formatter\GS1;
 use Nkamuo\Barcode\Formatter\BarcodeFormatterInterface;
 use Nkamuo\Barcode\Model\BarcodeInterface;
 
-class Code128labelBarcodeFormatter implements BarcodeFormatterInterface{
+class ReadableLabelBarcodeFormatter implements BarcodeFormatterInterface{
     /**
      * @inheritDoc
      */
@@ -17,7 +17,7 @@ class Code128labelBarcodeFormatter implements BarcodeFormatterInterface{
             if($formattedData !== '') {
                 $formattedData .= ' ';
             }
-            $formattedData .= sprintf("(%s) %s", $ai->getCode(), $$ai->getValue());
+            $formattedData .= sprintf("(%s) %s", $ai->getCode(), $ai->getValue());
         }
 
         return trim($formattedData);

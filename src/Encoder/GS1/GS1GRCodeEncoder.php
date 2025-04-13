@@ -1,17 +1,20 @@
 <?php
 namespace Nkamuo\Barcode\Encoder\GS1;
 
-use chillerlan\QRCode\QRCode;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\WriterInterface;
+use InvalidArgumentException;
 use Nkamuo\Barcode\Encoder\BarcodeEncoderInterface;
+use Nkamuo\Barcode\Formatter\BarcodeFormatterInterface;
 use Nkamuo\Barcode\Model\BarcodeInterface;
 
 class GS1GRCodeEncoder implements BarcodeEncoderInterface{
 
 
-    private QRCode $qrCode;
-
-    public function __construct(?QRCode $qrCode = null) {
-        $this->qrCode = $qrCode ?? new QRCode();
+    public function __construct(
+        private readonly WriterInterface           $writer,
+        private readonly BarcodeFormatterInterface $formatter,
+        ) {
     }
     
     /**
@@ -19,16 +22,13 @@ class GS1GRCodeEncoder implements BarcodeEncoderInterface{
      */
     public function encode(BarcodeInterface $barcode, string $symbol, string|null $format = null, array $context = []): string {
         if(!$this->supports($barcode, $symbol, $format, $context)){
-            throw new \InvalidArgumentException("Unsupported barcode or symbol");
+            throw new InvalidArgumentException("Unsupported barcode or symbol");
         }
         
-        $value = $barcode->getValue();
-        $standard = $barcode->getStandard();
-        $type = $barcode->getType();
-        $attributes = $barcode->getAttributes();
-        $metadata = $barcode->getMetadata();
-        $data = $this->qrCode->render($$value, );
-        return $data;
+        $data = $this->formatter->format($barcode, $format, $context);
+        $qrcode = new QrCode($data);
+        $result = $this->writer->write($qrcode, options: []);
+        return $result->getDataUri();
     }
     
     /**
@@ -41,7 +41,7 @@ class GS1GRCodeEncoder implements BarcodeEncoderInterface{
         }
 
         // Check if the symbol is supported
-        $supportedSymbols = ['QR', 'EAN-13', 'UPC', 'Code128'];
+        $supportedSymbols = ['QR',];
         if (!in_array($symbol, $supportedSymbols)) {
             return false;
         }

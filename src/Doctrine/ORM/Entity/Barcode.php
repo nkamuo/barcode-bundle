@@ -1,6 +1,7 @@
 <?php
 namespace Nkamuo\Barcode\Doctrine\ORM\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Nkamuo\Barcode\Model\WritableBarcodeAttributeInterface;
@@ -39,12 +40,18 @@ class Barcode implements WritableBarcodeInterface{
     #[ORM\Column(type: 'json', nullable: true)]
     private array $metadata = [];
 
-    #[ORM\OneToMany(mappedBy: 'barcode', targetEntity: BarcodeAttribute::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: BarcodeAttribute::class, mappedBy: 'barcode', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $attributes;
 
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $format = null;
+
+
+    public function __construct()
+    {
+        $this->attributes = new ArrayCollection();
+    }
 
     /**
      * @inheritDoc

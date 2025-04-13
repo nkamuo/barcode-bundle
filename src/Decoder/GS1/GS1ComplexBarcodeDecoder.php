@@ -5,6 +5,7 @@ namespace Nkamuo\Barcode\Decoder\GS1;
 use Lamoda\GS1Parser\Parser\ParserInterface;
 use Lamoda\GS1Parser\Validator\ValidatorInterface;
 use Nkamuo\Barcode\Decoder\BarcodeDecoderInterface;
+use Nkamuo\Barcode\Model\BarcodeInterface;
 use Nkamuo\Barcode\Model\WritableBarcodeInterface;
 
 class GS1ComplexBarcodeDecoder  implements BarcodeDecoderInterface
@@ -18,7 +19,7 @@ class GS1ComplexBarcodeDecoder  implements BarcodeDecoderInterface
     /**
      * @inheritDoc
      */
-    public function decode(WritableBarcodeInterface $barcode, string $data, string|null $symbol = null, string|null $format = null, array $context = []): void
+    public function decode(WritableBarcodeInterface $barcode, string $data, string|null $symbol = null, string|null $format = null, array $context = []): BarcodeInterface
     {
 
         $parsedData = $this->parser->parse($data);
@@ -44,7 +45,7 @@ class GS1ComplexBarcodeDecoder  implements BarcodeDecoderInterface
                 ->addMetadata('symbol', $symbol);
         }
 
-        $barcode
+        return $barcode
         ->setStandard('GS1')
         ->addMetadata('standard',  'GS1')
         ->addMetadata('format', $format);

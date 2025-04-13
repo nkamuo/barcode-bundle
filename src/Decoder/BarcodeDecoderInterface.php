@@ -1,6 +1,8 @@
 <?php
 namespace Nkamuo\Barcode\Decoder;
 
+use Nkamuo\Barcode\Exception\BarcodeDecodeException;
+use Nkamuo\Barcode\Model\BarcodeInterface;
 use Nkamuo\Barcode\Model\WritableBarcodeInterface;
 
 interface BarcodeDecoderInterface{
@@ -11,7 +13,7 @@ interface BarcodeDecoderInterface{
      * @param string|null $symbol The symbol to check support for (e.g., "QR", "EAN-13", etc.).
      * @param string|null $format The format to check support for (e.g., "PNG", "SVG", "STRING" etc.).
      * @param array $context
-     * @return void
+     * @return bool
      */
     public function supports(string $data, ?string $symbol = null, ?string $format = null, array $context = []): bool;
    
@@ -22,9 +24,10 @@ interface BarcodeDecoderInterface{
      * @param string|null $symbol
      * @param string|null $format
      * @param array $context
-     * @return void
+     * @return BarcodeInterface
+     * @throws BarcodeDecodeException
      */
-    public function decode(WritableBarcodeInterface $barcode, string $data, ?string $symbol = null, ?string $format = null, array $context = []): void;
+    public function decode(WritableBarcodeInterface $barcode, string $data, ?string $symbol = null, ?string $format = null, array $context = []): BarcodeInterface;
 
      
     /**

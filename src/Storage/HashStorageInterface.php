@@ -1,44 +1,50 @@
 <?php
 
-namespace Nkamuo\Barcode\Generator\Storage;
+namespace Nkamuo\Barcode\Storage;
 
-interface PersistentStorageInterface
+interface HashStorageInterface
 {
     /**
      * Get a value by its key.
      *
-     * @param string $key
-     * @return mixed|null Null if the key does not exist.
+     * @param string $key The key of the value to retrieve.
+     * @return mixed|null Returns the value if it exists, or null otherwise.
      */
     public function get(string $key): mixed;
 
     /**
      * Save or update a value by its key.
      *
-     * @param string $key
-     * @param mixed $value
-     * @return void
+     * @param string $key The key to save the value under.
+     * @param mixed $value The value to save.
      */
     public function set(string $key, mixed $value): void;
 
     /**
      * Delete a key-value pair.
      *
-     * @param string $key
-     * @return bool True if the key was successfully deleted, false otherwise.
+     * @param string $key The key of the value to delete.
+     * @return bool Returns true if the key was successfully deleted, false otherwise.
      */
     public function delete(string $key): bool;
 
     /**
      * Check if a key exists.
      *
-     * @param string $key
-     * @return bool True if the key exists, false otherwise.
+     * @param string $key The key to check for existence.
+     * @return bool Returns true if the key exists, false otherwise.
      */
-    public function exists(string $key): bool;
+    public function has(string $key): bool;
 
     /**
-     * Clear all key-value pairs.
+     * Retrieve all key-value pairs.
+     *
+     * @return array All stored data as an associative array.
+     */
+    public function all(): array;
+
+    /**
+     * Clear all key-value pairs from storage.
      *
      * @return void
      */

@@ -1,6 +1,6 @@
 <?php
 
-namespace Nkamuo\Barcode;
+namespace Nkamuo\Barcode\Repository;
 
 use Nkamuo\Barcode\Model\BarcodeInterface;
 
@@ -13,47 +13,42 @@ use Nkamuo\Barcode\Model\BarcodeInterface;
 
 interface BarcodeRepositoryInterface{
     /**
-     * Creates a new barcode instance.
+     * Creates a new barcode instance or save existing.
      *
      * @param BarcodeInterface $barcode The barcode instance to create.
      * @return void
      */
-    public function create(BarcodeInterface $barcode): void;
-
-    /**
-     * Updates an existing barcode instance.
-     *
-     * @param BarcodeInterface $barcode The barcode instance to update.
-     * @return void
-     */
-    public function update(BarcodeInterface $barcode): void;
+    public function save(BarcodeInterface $barcode): void;
 
     /**
      * Deletes a barcode instance.
      *
-     * @param string $barcodeId The ID of the barcode to delete.
+     * @param BarcodeInterface $barcode
      * @return void
      */
-    public function delete(string $barcodeId): void;
+    public function delete(BarcodeInterface $barcode): void;
+
+    /**
+     * Used to perform a more involved search of the barcode using both attributes and metadata
+     *
+     * @param BarcodeInterface $barcode
+     * @return BarcodeInterface|null The found barcode instance or null if not found.
+     */
+    public function find(BarcodeInterface $barcode): ?BarcodeInterface;
+
+    /**
+     * @param BarcodeInterface $barcode
+     * @param array $context
+     * @return array<int,BarcodeInterface>
+     */
+    public function search(BarcodeInterface $barcode, array $context = []): array;
+
     /**
      * Finds a barcode instance by its ID.
      *
      * @param string $barcodeId The ID of the barcode to find.
      * @return BarcodeInterface|null The found barcode instance or null if not found.
      */
-    public function find(string $barcodeId): ?BarcodeInterface;
-    /**
-     * Finds all barcode instances.
-     *
-     * @return array<int,BarcodeInterface> An array of all barcode instances.
-     */
-    public function findAll(): array;
-    /**
-     * Finds barcodes by a specific attribute.
-     *
-     * @param string $attributeName The name of the attribute to search by.
-     * @param mixed $value The value of the attribute to search for.
-     * @return array<int,BarcodeInterface> An array of matching barcode instances.
-     */
-    public function findByAttribute(string $attributeName, mixed $value): array;
+    public function findById(string $barcodeId): ?BarcodeInterface;
+
 }

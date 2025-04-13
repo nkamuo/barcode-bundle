@@ -6,7 +6,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\DriverManager;
 
-class DoctrineKeyValueStorage implements HashStorageInterface
+class DBALHashStorage implements HashStorageInterface
 {
     private Connection $connection;
     private string $tableName;
@@ -15,14 +15,13 @@ class DoctrineKeyValueStorage implements HashStorageInterface
     /**
      * Constructor initializes the Doctrine DBAL storage.
      *
-     * @param array $dbConfig Database connection configuration for Doctrine DBAL.
      * @param string $tableName The name of the table to store key-value pairs.
      * @param bool $autoCreateTable Whether to create the table if it doesn't exist.
      * @throws Exception
      */
-    public function __construct(array $dbConfig, array $config = [],  string $tableName = 'store', bool $autoCreateTable = true)
+    public function __construct(Connection $connection, array $config = [],  string $tableName = 'store', bool $autoCreateTable = true)
     {
-        $this->connection = DriverManager::getConnection($dbConfig);
+        $this->connection = $connection;//DriverManager::getConnection($dbConfig);
         $this->tableName = $tableName;
         $this->autoCreateTable = $autoCreateTable;
 

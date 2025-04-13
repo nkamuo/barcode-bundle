@@ -2,6 +2,7 @@
 namespace Nkamuo\Barcode\Decoder\GS1;
 
 use Nkamuo\Barcode\Decoder\BarcodeDecoderInterface;
+use Nkamuo\Barcode\Model\BarcodeInterface;
 use Nkamuo\Barcode\Model\WritableBarcodeInterface;
 
 class GS1SimpleBarcodeDecoder  implements BarcodeDecoderInterface{
@@ -20,7 +21,8 @@ class GS1SimpleBarcodeDecoder  implements BarcodeDecoderInterface{
     ];
 
    
-    public function decode(WritableBarcodeInterface $barcode, string $data, string|null $symbol = null, string|null $format = null, array $context = []): void{
+    public function decode(WritableBarcodeInterface $barcode, string $data, string|null $symbol = null, string|null $format = null, array $context = []): BarcodeInterface
+    {
         $type = GS1CodeValidator::detectAndValidate($data);
         if ($type === null) {
             throw new \InvalidArgumentException("Invalid GS1 barcode data");
@@ -31,7 +33,7 @@ class GS1SimpleBarcodeDecoder  implements BarcodeDecoderInterface{
             throw new \InvalidArgumentException("Unsupported GS1 barcode type: $type");
         }
         
-        $barcode
+        return $barcode
             ->setType($type)
             ->setStandard('GS1')
             ->addMetadata('standard', 'GS1')
@@ -39,6 +41,7 @@ class GS1SimpleBarcodeDecoder  implements BarcodeDecoderInterface{
             ->addMetadata('symbol', $symbol)
             // 
             ->addAttribute($ai, $data)
+            ->end()
             ;
     }
    

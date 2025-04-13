@@ -1,6 +1,7 @@
 <?php
 namespace Nkamuo\Barcode\Encoder;
 
+use InvalidArgumentException;
 use Nkamuo\Barcode\Model\BarcodeInterface;
 
 class ChainBarcodeEncoder implements BarcodeEncoderInterface{
@@ -8,7 +9,6 @@ class ChainBarcodeEncoder implements BarcodeEncoderInterface{
 
     public function __construct(
         private readonly iterable $encoders,
-        private readonly string $defaultEncoder = 'default',
     ){}
     
    
@@ -22,7 +22,7 @@ class ChainBarcodeEncoder implements BarcodeEncoderInterface{
             }
         }
 
-        throw new \InvalidArgumentException("No suitable encoder found for the given barcode and symbol");
+        throw new InvalidArgumentException("No suitable encoder found for the given barcode and symbol");
     }
     
     /**

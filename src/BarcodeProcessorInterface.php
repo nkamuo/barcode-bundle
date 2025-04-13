@@ -39,6 +39,14 @@ interface BarcodeProcessorInterface{
      */
     public function encode(BarcodeInterface $barcode, string $symbol, ?string $format = null, array $context = []): string;
 
+    /**
+     * Searches for data based on the provided string and context.
+     *
+     * @param string $data The string to search for.
+     * @param array $context An optional array of context to refine the search.
+     * @return array<int,BarcodeInterface> An array containing the search results.
+     */
+    public function search(string $data, array $context = []): array;
 
     
 }

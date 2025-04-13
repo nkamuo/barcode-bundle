@@ -14,9 +14,9 @@ class GS1ComplexBarcodeEncoder implements BarcodeEncoderInterface{
 
 
     public function __construct(
-        private TypeInterface $encoder,
-        private RendererInterface $renderer,
-        private BarcodeFormatterInterface $formatter,
+        private readonly TypeInterface             $encoder,
+        private readonly RendererInterface         $renderer,
+        private readonly BarcodeFormatterInterface $formatter,
     ) {
 
         // $this->encoder = new TypeCode128();
@@ -33,8 +33,7 @@ class GS1ComplexBarcodeEncoder implements BarcodeEncoderInterface{
         
         $data = $this->formatter->format($barcode, $format, $context);
         $bCode = $this->encoder->getBarcode($data,);
-        $result = $this->renderer->render($bCode, );
-        return $result;
+        return $this->renderer->render($bCode, );
     }
     
     /**

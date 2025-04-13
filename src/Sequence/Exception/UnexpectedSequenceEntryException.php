@@ -1,8 +1,8 @@
 <?php
 
-namespace Nkamuo\Barcode\Generator\Sequence\Exception;
+namespace Nkamuo\Barcode\Sequence\Exception;
 
-class UnexpectedSequneceEntryException
+class UnexpectedSequenceEntryException extends \Exception
 {
 
 }
