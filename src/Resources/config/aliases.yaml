@@ -1,5 +1,5 @@
 services:
-  Nkamuo\Barcode\ProcessorInterface: '@barcode.processor.default'
+  Nkamuo\Barcode\BarcodeProcessorInterface: '@barcode.processor.default'
   Nkamuo\Barcode\Decoder\BarcodeDecoderInterface: '@barcode.decoder.default'
   Nkamuo\Barcode\Encoder\BarcodeEncoderInterface: '@barcode.encoder.default'
   Nkamuo\Barcode\Factory\BarcodeFactoryInterface: '@barcode.factory.default'
