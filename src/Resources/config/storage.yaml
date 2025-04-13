@@ -1,0 +1,7 @@
+services:
+    barcode.storage.hash.default:
+      public: true
+      class: Nkamuo\Barcode\Storage\InMemoryHashStorage
+      tags:
+          - name: barcode.storage
+          - name: barcode.storage.hash

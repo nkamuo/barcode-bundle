@@ -1,8 +1,12 @@
 imports:
   - { resource: './gs1/services.yaml' }
 #  -
+  - { resource: './aliases.yaml' }
+#  -
   - { resource: './formatter.yaml' }
   - { resource: './generator.yaml' }
+  - { resource: './sequence.yaml' }
+  - { resource: './storage.yaml' }
 services:
   # Chain services
   barcode.formatter.default:

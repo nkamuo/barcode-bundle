@@ -1,0 +1,6 @@
+services:
+    barcode.sequence.generator.default:
+      public: true
+      class: Nkamuo\Barcode\Sequence\SequenceGenerator
+      tags:
+          - name: barcode.sequence.generator

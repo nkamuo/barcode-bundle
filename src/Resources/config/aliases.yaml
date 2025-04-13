@@ -1,0 +1,11 @@
+services:
+  Nkamuo\Barcode\ProcessorInterface: '@barcode.processor.default'
+  Nkamuo\Barcode\Decoder\BarcodeDecoderInterface: '@barcode.decoder.default'
+  Nkamuo\Barcode\Encoder\BarcodeEncoderInterface: '@barcode.encoder.default'
+  Nkamuo\Barcode\Factory\BarcodeFactoryInterface: '@barcode.factory.default'
+  Nkamuo\Barcode\Repository\BarcodeRepositoryInterface: '@barcode.repository.default'
+  Nkamuo\Barcode\Generator\BarcodeGeneratorInterface: '@barcode.generator.default'
+  Nkamuo\Barcode\Formatter\BarcodeFormatterInterface: '@barcode.formatter.default'
+#
+  Nkamuo\Barcode\Sequence\SequenceGeneratorInterface: '@barcode.sequence.generator.default'
+  Nkamuo\Barcode\Storage\HashStorageInterface: '@barcode.storage.hash.default'
