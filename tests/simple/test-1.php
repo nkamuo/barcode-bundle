@@ -4,7 +4,7 @@ use Nkamuo\Barcode\BarcodeProcessorInterface;
 
 require __DIR__ . '/../../vendor/autoload.php';
 
-/** @var BarcodeProcessorInterface */
+/** @var BarcodeProcessorInterface $processor */
 $processor = require __DIR__. '/processor.php';
 
 

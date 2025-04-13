@@ -34,6 +34,13 @@ composer require nkamuo/barcode-bundle
 This will:
 - Register the `Nkamuo\Barcode\BarcodeBundle` in `config/bundles.php`.
 - Copy the default configuration to `config/packages/barcode.yaml`.
+- If not,  you can add them manually as follow
+```php
+[
+   //...
+   Nkamuo\Barcode\BarcodeBundle::class => ['all' => true]
+]
+```
 
 ### Requirements
 
@@ -46,7 +53,7 @@ This will:
 ## 2. Features
 
 The Barcode Bundle allows you to:
-- Generate barcodes and QR codes.
+- Generate Barcodes, DataMatrix and QR codes.
 - Encode arbitrary data into a variety of formats.
 - Decode barcodes and QR codes.
 - Apply custom formatting to barcodes.
@@ -56,6 +63,164 @@ The Barcode Bundle allows you to:
 ---
 
 ## 3. Configuration
+
+
+*3.1 Basic Usage*
+---
+
+**3.1.1 - Create the Barcode Processor**
+```php
+
+
+use Endroid\QrCode\Writer\ConsoleWriter;
+use Nkamuo\Barcode\BarcodeProcessor;
+use Nkamuo\Barcode\Decoder\ChainBarcodeDecoder;
+use Nkamuo\Barcode\Decoder\GS1\GS1ComplexBarcodeDecoder;
+use Nkamuo\Barcode\Decoder\GS1\GS1SimpleBarcodeDecoder;
+use Nkamuo\Barcode\Encoder\ChainBarcodeEncoder;
+use Nkamuo\Barcode\Encoder\GS1\GS1ComplexBarcodeEncoder;
+use Nkamuo\Barcode\Factory\BarcodeFactory;
+use Nkamuo\Barcode\Formatter\ChainBarcodeFormatter;
+use Nkamuo\Barcode\Formatter\GS1\ReadableLabelBarcodeFormatter;
+use Nkamuo\Barcode\Formatter\BarcodeFormatter;
+use Nkamuo\Barcode\Encoder\GS1\GS1QRCodeEncoder;
+use Nkamuo\Barcode\Formatter\GS1\DataBarcodeFormatter;
+use Nkamuo\Barcode\Generator\ChainBarcodeGenerator;
+use Nkamuo\Barcode\Generator\SerialNumberBarcodeGenerator;
+use Nkamuo\Barcode\Repository\InMemoryBarcodeRepository;
+use Nkamuo\Barcode\Sequence\SequenceGenerator;
+use Nkamuo\Barcode\Storage\InMemoryHashStorage;
+use Picqer\Barcode\Renderers\PngRenderer;
+use Picqer\Barcode\Types\TypeCode128;
+
+
+
+
+$factory = new BarcodeFactory();
+
+$repository = new InMemoryBarcodeRepository();
+
+$formatter = new ChainBarcodeFormatter(formatters: [
+    new DataBarcodeFormatter(),
+    new ReadableLabelBarcodeFormatter(),
+    new BarcodeFormatter(),
+]);
+
+$encoder = new ChainBarcodeEncoder(
+    encoders: [
+        new GS1QRCodeEncoder(
+            writer: new ConsoleWriter(),//new PngWriter(),
+            formatter: $formatter,
+        ),
+        new GS1ComplexBarcodeEncoder(
+            encoder: new TypeCode128(),
+            renderer: new PngRenderer(),//new PngWriter(),
+            formatter: $formatter,
+
+        ),
+    ]
+);
+
+$decoder = new ChainBarcodeDecoder(
+    decoders: [
+        new GS1ComplexBarcodeDecoder(),
+        new GS1SimpleBarcodeDecoder(),
+    ],
+    factory: $factory,
+);
+
+
+$generator = new ChainBarcodeGenerator(
+    generators: [
+        new SerialNumberBarcodeGenerator(
+            sequenceGenerator: new SequenceGenerator(
+                storage: new InMemoryHashStorage(),
+            ),
+        ),
+    ],
+    factory: $factory,
+);
+
+
+$processor = new BarcodeProcessor(
+    factory: $factory,
+    encoder: $encoder,
+    decoder: $decoder,
+    generator: $generator,
+    formatter: $formatter,
+    repository: $repository,
+);
+
+
+
+return $processor;
+
+```
+
+
+**3.1.2 Use the processor** 
+
+- Generate Barcode
+```php
+
+/** @var BarcodeProcessorInterface */
+$processor = require __DIR__. '/processor.php';
+
+$barcode = $processor->generate(
+    context: [
+        'prefix' => 'RM-',
+        'format' => 'png',
+        'width' => 300,
+        'height' => 300,
+        'error_correction_level' => 'high',
+        // Other relevant options for your generator
+    ]
+);
+
+echo $barcode;
+```
+- output
+```cmd
+RM-0000001
+```
+
+- Decode Barcode
+```php
+
+/** @var BarcodeProcessorInterface  $processor*/
+$processor = require __DIR__. '/processor.php';
+$barcode = $processor->decode(
+    data: ']d201034531200000111719112510ABCD1234'
+//    symbol: 'DataMatrix',
+    context: [
+        'standard' => 'GS1',
+    ]
+);
+
+echo $barcode;
+echo $barcode->getAttribute('01')->getValue();
+```
+
+- Encode Barcode
+```php
+<?php
+/** @var BarcodeProcessorInterface  $processor*/
+$processor = require __DIR__. '/processor.php';
+$result = $processor->encode(
+    barcode: $barcode,
+    symbol: 'Code128',
+    format: 'PNG',
+    context: [
+        'standard' => 'GS1',
+    ]
+);
+
+?>
+<img src="<?php echo $result;?>"/>
+
+```
+
+**3.2 With Symfony**
 
 By default, the bundle comes with a configuration file located at `config/packages/barcode.yaml`. You can customize the following settings:
 
@@ -83,7 +248,6 @@ barcode:
 
 Processors define how components like formatters, encoders, and decoders are chained together. You can have multiple processors with different configurations.
 
----
 
 ## 4. Usage
 

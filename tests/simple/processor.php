@@ -6,7 +6,6 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 
 use Endroid\QrCode\Writer\ConsoleWriter;
-use Endroid\QrCode\Writer\PngWriter;
 use Nkamuo\Barcode\BarcodeProcessor;
 use Nkamuo\Barcode\Decoder\ChainBarcodeDecoder;
 use Nkamuo\Barcode\Decoder\GS1\GS1ComplexBarcodeDecoder;
@@ -21,8 +20,6 @@ use Nkamuo\Barcode\Encoder\GS1\GS1QRCodeEncoder;
 use Nkamuo\Barcode\Formatter\GS1\DataBarcodeFormatter;
 use Nkamuo\Barcode\Generator\ChainBarcodeGenerator;
 use Nkamuo\Barcode\Generator\SerialNumberBarcodeGenerator;
-use Nkamuo\Barcode\Model\GS1\GS1Barcode;
-use Nkamuo\Barcode\Model\GS1\GS1ApplicationIdentifier;
 use Nkamuo\Barcode\Repository\InMemoryBarcodeRepository;
 use Nkamuo\Barcode\Sequence\SequenceGenerator;
 use Nkamuo\Barcode\Storage\InMemoryHashStorage;
@@ -79,11 +76,11 @@ $generatory = new ChainBarcodeGenerator(
 
 
 $processor = new BarcodeProcessor(
+    factory: $factory,
     encoder: $encoder,
     decoder: $decoder,
-    formatter: $formatter,
-    factory: $factory,
     generator: $generatory,
+    formatter: $formatter,
     repository: $repository,
 );
 
