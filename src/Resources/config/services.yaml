@@ -26,7 +26,7 @@ services:
 
   # Default Processor
   barcode.processor.default:
-    class: Nkamuo\Barcode\Processor\BarcodeProcessor
+    class: Nkamuo\Barcode\BarcodeProcessor
     arguments:
       $formatter: "@barcode.formatter.default"
       $encoder: "@barcode.encoder.default"
