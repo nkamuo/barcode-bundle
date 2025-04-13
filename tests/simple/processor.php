@@ -17,7 +17,7 @@ use Nkamuo\Barcode\Factory\BarcodeFactory;
 use Nkamuo\Barcode\Formatter\ChainBarcodeFormatter;
 use Nkamuo\Barcode\Formatter\GS1\ReadableLabelBarcodeFormatter;
 use Nkamuo\Barcode\Formatter\BarcodeFormatter;
-use Nkamuo\Barcode\Encoder\GS1\GS1GRCodeEncoder;
+use Nkamuo\Barcode\Encoder\GS1\GS1QRCodeEncoder;
 use Nkamuo\Barcode\Formatter\GS1\DataBarcodeFormatter;
 use Nkamuo\Barcode\Generator\ChainBarcodeGenerator;
 use Nkamuo\Barcode\Generator\SerialNumberBarcodeGenerator;
@@ -44,7 +44,7 @@ $formatter = new ChainBarcodeFormatter(formatters: [
 
 $encoder = new ChainBarcodeEncoder(
     encoders: [
-        new GS1GRCodeEncoder(
+        new GS1QRCodeEncoder(
             writer: new ConsoleWriter(),//new PngWriter(),
             formatter: $formatter,
         ),

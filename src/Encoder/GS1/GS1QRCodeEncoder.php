@@ -11,7 +11,7 @@ use Nkamuo\Barcode\Formatter\BarcodeFormatter;
 use Nkamuo\Barcode\Formatter\BarcodeFormatterInterface;
 use Nkamuo\Barcode\Model\BarcodeInterface;
 
-class GS1GRCodeEncoder implements BarcodeEncoderInterface{
+class GS1QRCodeEncoder implements BarcodeEncoderInterface{
 
     private readonly WriterInterface           $writer;
     private readonly BarcodeFormatterInterface $formatter;
