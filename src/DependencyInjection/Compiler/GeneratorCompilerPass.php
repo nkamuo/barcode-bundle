@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\Reference;
 class GeneratorCompilerPass implements CompilerPassInterface
 {
     public const TAG_NAME = 'barcode.generator';
+    public const FACTORY_SERVICE_ID = 'barcode.factory.default';
 
     public function process(ContainerBuilder $container): void
     {
@@ -43,7 +44,9 @@ class GeneratorCompilerPass implements CompilerPassInterface
                 }
                 $definition = $container->getDefinition($id);
                 $definition
-                        ->setArgument('$generators', $generators);
+                        ->setArgument('$generators', $generators)
+                        ->setArgument('$factory', new Reference(self::FACTORY_SERVICE_ID))
+                ;
             }
     }
 }
