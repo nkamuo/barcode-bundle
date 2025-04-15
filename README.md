@@ -89,9 +89,12 @@ use Nkamuo\Barcode\BarcodeProcessorInterface;
 /** @var BarcodeProcessorInterface $processor */
 $processor = $container->get(BarcodeProcessorInterface::class);
 
-// Generate a barcode
-$barcode = $processor->generate(['type' => 'GTIN', 'value' => '0123456789012']);
-echo $barcode->getValue(); // Outputs: 0123456789012
+// Generate a barcode for Raw-Material
+$barcode = $processor->generate([
+    'prefix' => 'RM-',
+    'standard' => 'CUSTOM'
+    ]);
+echo $barcode->getValue(); // Outputs: RM-00000001
 
 // Encode the barcode into a QR code
 $encoded = $processor->encode($barcode, 'QR', 'PNG');
@@ -137,8 +140,11 @@ $processor = new BarcodeProcessor(
 );
 
 // Use the processor
-$barcode = $processor->generate(['type' => 'GTIN', 'value' => '0123456789012']);
-echo $barcode->getValue();
+$barcode = $processor->generate([
+    'prefix' => 'FXT',
+    'pad_lenth' => 5,
+    ]);
+echo $barcode->getValue(); // Output: FXT0000012
 ```
 
 ---
