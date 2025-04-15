@@ -56,7 +56,7 @@ Whether you're building a Symfony application or a standalone PHP project, this 
 To install the library, run:
 
 ```bash
-composer require nkamuo/barcode-bundle
+composer require nkamuo/barcode-bundle:dev-main
 ```
 
 For Symfony applications, this will:
