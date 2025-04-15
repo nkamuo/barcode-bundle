@@ -1,231 +1,155 @@
-# Barcode Bundle for Symfony
+# Barcode Bundle for Symfony and Standalone Applications
 
-The **Barcode Bundle** is a custom Symfony library that provides a complete and flexible solution for generating, processing, encoding, decoding, and formatting barcodes and QR codes. It is built on top of popular third-party libraries like `chillerlan/php-qrcode`, `picqer/php-barcode-generator`, and `endroid/qr-code`.
-
-## Table of Contents
-
-1. [Installation](#installation)
-2. [Features](#features)
-3. [Configuration](#configuration)
-4. [Usage](#usage)
-    - [Formatters](#formatters)
-    - [Encoders](#encoders)
-    - [Decoders](#decoders)
-    - [Generators](#generators)
-5. [Extending the Library](#extending-the-library)
-6. [Testing](#testing)
-7. [Compiler Pass](#compiler-pass)
-8. [Contributing](#contributing)
+The **Barcode Bundle** is a flexible and extensible library for generating, processing, encoding, decoding, and formatting barcodes, DataMatrix and QR codes. It is designed to work seamlessly with Symfony applications but can also be used in standalone PHP projects. The library aims to support established standards such as `GS1` and `ANSI` — either out of the box or through third-party and custom extensions.
 
 ---
 
-## 1. Installation
+## Table of Contents
 
-This library is designed to work seamlessly with Symfony applications and Symfony Flex.
+1. [Introduction](#introduction)
+2. [Installation](#installation)
+3. [Quick Start](#quick-start)
+    - [Using in Symfony](#using-in-symfony)
+    - [Using in Standalone PHP Applications](#using-in-standalone-php-applications)
+4. [Configuration](#configuration)
+    - [Symfony Configuration](#symfony-configuration)
+    - [Standalone Configuration](#standalone-configuration)
+5. [Components Overview](#components-overview)
+    - [Encoders](#encoders)
+    - [Decoders](#decoders)
+    - [Formatters](#formatters)
+    - [Generators](#generators)
+    - [Repositories](#repositories)
+    - [Processors](#processors)
+6. [Extending the Library](#extending-the-library)
+7. [Customization](#customization)
+8. [Examples](#examples)
+9. [Testing](#testing)
+10. [Contributing](#contributing)
+11. [Credits](#credits)
+12. [License](#license)
+
+---
+
+## 1. Introduction
+
+The Barcode Bundle provides a complete solution for working with barcodes and QR codes. It supports:
+- Generating barcodes and QR codes.
+- Encoding data into various formats.
+- Decoding barcodes and QR codes into structured data.
+- Formatting barcodes for human-readable or standard-compliant outputs.
+- Extending and customizing components like formatters, encoders, decoders, and processors.
+
+Whether you're building a Symfony application or a standalone PHP project, this library is designed to be modular, extensible, and easy to use.
+
+---
+
+## 2. Installation
+
+### Requirements
+- PHP 8.1 or higher.
+- Symfony 6.0 or later (for Symfony integration).
+- Composer 2.0 or later.
 
 ### Install via Composer
 
-Add the library to your Symfony application:
+To install the library, run:
 
 ```bash
 composer require nkamuo/barcode-bundle
 ```
 
-This will:
+For Symfony applications, this will:
 - Register the `Nkamuo\Barcode\BarcodeBundle` in `config/bundles.php`.
 - Copy the default configuration to `config/packages/barcode.yaml`.
-- If not,  you can add them manually as follow
+
+If the bundle is not automatically registered, add it manually:
+
 ```php
-[
-   //...
-   Nkamuo\Barcode\BarcodeBundle::class => ['all' => true]
-]
+// config/bundles.php
+return [
+    // ...
+    Nkamuo\Barcode\BarcodeBundle::class => ['all' => true],
+];
 ```
 
-### Requirements
-
-- PHP 8.1 or higher.
-- Symfony 6.0 or later.
-- Composer 2.0 or later.
-
 ---
 
-## 2. Features
+## 3. Quick Start
 
-The Barcode Bundle allows you to:
-- Generate Barcodes, DataMatrix and QR codes.
-- Encode arbitrary data into a variety of formats.
-- Decode barcodes and QR codes.
-- Apply custom formatting to barcodes.
-- Chain multiple formatters, encoders, etc. for complex workflows.
-- Bind components like formatters, encoders, and decoders to specific processors for maximum flexibility.
+### Using in Symfony
 
----
+1. **Install the library** (see [Installation](#installation)).
+2. **Configure the bundle** in `config/packages/barcode.yaml` (see [Symfony Configuration](#symfony-configuration)).
+3. **Use the Barcode Processor**:
 
-## 3. Configuration
-
-
-*3.1 Basic Usage*
----
-
-**3.1.1 - Create the Barcode Processor**
 ```php
+use Nkamuo\Barcode\BarcodeProcessorInterface;
 
+/** @var BarcodeProcessorInterface $processor */
+$processor = $container->get(BarcodeProcessorInterface::class);
 
-use Endroid\QrCode\Writer\ConsoleWriter;
+// Generate a barcode
+$barcode = $processor->generate(['type' => 'GTIN', 'value' => '0123456789012']);
+echo $barcode->getValue(); // Outputs: 0123456789012
+
+// Encode the barcode into a QR code
+$encoded = $processor->encode($barcode, 'QR', 'PNG');
+file_put_contents('barcode.png', $encoded);
+
+// Decode a barcode
+$decodedBarcode = $processor->decode('0101234567890128', 'EAN-13');
+echo $decodedBarcode->getValue(); // Outputs: 0101234567890128
+```
+
+### Using in Standalone PHP Applications
+
+1. **Install the library** (see [Installation](#installation)).
+2. **Set up the components manually**:
+
+```php
+require __DIR__ . '/vendor/autoload.php';
+
 use Nkamuo\Barcode\BarcodeProcessor;
-use Nkamuo\Barcode\Decoder\ChainBarcodeDecoder;
-use Nkamuo\Barcode\Decoder\GS1\GS1ComplexBarcodeDecoder;
-use Nkamuo\Barcode\Decoder\GS1\GS1SimpleBarcodeDecoder;
-use Nkamuo\Barcode\Encoder\ChainBarcodeEncoder;
-use Nkamuo\Barcode\Encoder\GS1\GS1ComplexBarcodeEncoder;
 use Nkamuo\Barcode\Factory\BarcodeFactory;
-use Nkamuo\Barcode\Formatter\ChainBarcodeFormatter;
-use Nkamuo\Barcode\Formatter\GS1\ReadableLabelBarcodeFormatter;
-use Nkamuo\Barcode\Formatter\BarcodeFormatter;
-use Nkamuo\Barcode\Encoder\GS1\GS1QRCodeEncoder;
-use Nkamuo\Barcode\Formatter\GS1\DataBarcodeFormatter;
-use Nkamuo\Barcode\Generator\ChainBarcodeGenerator;
-use Nkamuo\Barcode\Generator\SerialNumberBarcodeGenerator;
 use Nkamuo\Barcode\Repository\InMemoryBarcodeRepository;
-use Nkamuo\Barcode\Sequence\SequenceGenerator;
-use Nkamuo\Barcode\Storage\InMemoryHashStorage;
-use Picqer\Barcode\Renderers\PngRenderer;
-use Picqer\Barcode\Types\TypeCode128;
+use Nkamuo\Barcode\Formatter\ChainBarcodeFormatter;
+use Nkamuo\Barcode\Encoder\ChainBarcodeEncoder;
+use Nkamuo\Barcode\Decoder\ChainBarcodeDecoder;
+use Nkamuo\Barcode\Generator\ChainBarcodeGenerator;
 
-
-
-
+// Initialize components
 $factory = new BarcodeFactory();
-
 $repository = new InMemoryBarcodeRepository();
+$formatter = new ChainBarcodeFormatter([...]); // Add formatters
+$encoder = new ChainBarcodeEncoder([...]);     // Add encoders
+$decoder = new ChainBarcodeDecoder([...]);     // Add decoders
+$generator = new ChainBarcodeGenerator([...]); // Add generators
 
-$formatter = new ChainBarcodeFormatter(formatters: [
-    new DataBarcodeFormatter(),
-    new ReadableLabelBarcodeFormatter(),
-    new BarcodeFormatter(),
-]);
-
-$encoder = new ChainBarcodeEncoder(
-    encoders: [
-        new GS1QRCodeEncoder(
-            writer: new ConsoleWriter(),//new PngWriter(),
-            formatter: $formatter,
-        ),
-        new GS1ComplexBarcodeEncoder(
-            encoder: new TypeCode128(),
-            renderer: new PngRenderer(),//new PngWriter(),
-            formatter: $formatter,
-
-        ),
-    ]
-);
-
-$decoder = new ChainBarcodeDecoder(
-    decoders: [
-        new GS1ComplexBarcodeDecoder(),
-        new GS1SimpleBarcodeDecoder(),
-    ],
-    factory: $factory,
-);
-
-
-$generator = new ChainBarcodeGenerator(
-    generators: [
-        new SerialNumberBarcodeGenerator(
-            sequenceGenerator: new SequenceGenerator(
-                storage: new InMemoryHashStorage(),
-            ),
-        ),
-    ],
-    factory: $factory,
-);
-
-
+// Create the processor
 $processor = new BarcodeProcessor(
     factory: $factory,
     encoder: $encoder,
     decoder: $decoder,
     generator: $generator,
     formatter: $formatter,
-    repository: $repository,
+    repository: $repository
 );
 
-
-
-return $processor;
-
+// Use the processor
+$barcode = $processor->generate(['type' => 'GTIN', 'value' => '0123456789012']);
+echo $barcode->getValue();
 ```
 
+---
 
-**3.1.2 Use the processor** 
+## 4. Configuration
 
-- Generate Barcode
-```php
+### Symfony Configuration
 
-/** @var BarcodeProcessorInterface */
-$processor = require __DIR__. '/processor.php';
-
-$barcode = $processor->generate(
-    context: [
-        'prefix' => 'RM-',
-        'format' => 'png',
-        'width' => 300,
-        'height' => 300,
-        'error_correction_level' => 'high',
-        // Other relevant options for your generator
-    ]
-);
-
-echo $barcode;
-```
-- output
-```cmd
-RM-0000001
-```
-
-- Decode Barcode
-```php
-
-/** @var BarcodeProcessorInterface  $processor*/
-$processor = require __DIR__. '/processor.php';
-$barcode = $processor->decode(
-    data: ']d201034531200000111719112510ABCD1234'
-//    symbol: 'DataMatrix',
-    context: [
-        'standard' => 'GS1',
-    ]
-);
-
-echo $barcode;
-echo $barcode->getAttribute('01')->getValue();
-```
-
-- Encode Barcode
-```php
-<?php
-/** @var BarcodeProcessorInterface  $processor*/
-$processor = require __DIR__. '/processor.php';
-$result = $processor->encode(
-    barcode: $barcode,
-    symbol: 'Code128',
-    format: 'PNG',
-    context: [
-        'standard' => 'GS1',
-    ]
-);
-
-?>
-<img src="<?php echo $result;?>"/>
-
-```
-
-**3.2 With Symfony**
-
-By default, the bundle comes with a configuration file located at `config/packages/barcode.yaml`. You can customize the following settings:
+The default configuration file is located at `config/packages/barcode.yaml`. You can customize the following settings:
 
 ```yaml
-# config/packages/barcode.yaml
 barcode:
     default_storage: 'in_memory'             # Default storage for barcodes
     enabled_formatters: ['qrcode', 'barcode'] # List of formatters to enable
@@ -234,207 +158,120 @@ barcode:
             encoders: ['basic_encoder']
             decoders: ['default_decoder']
             formatters: ['default_formatter']
-        custom_processor:                     # Example of a custom processor
-            encoders: ['advanced_encoder']
-            decoders: ['special_decoder']
-            formatters: ['special_formatter']
 ```
 
-### Default Storage
+### Standalone Configuration
 
-`default_storage` defines the storage mechanism (e.g., `in_memory` for temporary storage).
+For standalone applications, you can configure components manually by instantiating them and passing the required dependencies (see [Quick Start](#using-in-standalone-php-applications)).
 
-### Processors
+---
 
-Processors define how components like formatters, encoders, and decoders are chained together. You can have multiple processors with different configurations.
+## 5. Components Overview
 
+### [Encoders](docs/encoder.md)
+Encoders convert `BarcodeInterface` instances into specific formats like QR codes, Data Matrix, or PNG images.  
+See the [Encoders Documentation](docs/encoder.md) for more details.
 
-## 4. Usage
+### [Decoders](docs/decoder.md)
+Decoders interpret raw barcode data and convert it into structured `BarcodeInterface` instances.  
+See the [Decoders Documentation](docs/decoder.md) for more details.
 
-The library is built around a processor model, where components like formatters, encoders, decoders, and generators can be combined into chains.
+### [Formatters](docs/formatter.md)
+Formatters provide a way to format barcode data into human-readable or standard-compliant strings.  
+See the [Formatters Documentation](docs/formatter.md) for more details.
 
-### Formatters
+### [Generators](docs/generator.md)
+Generators create new barcodes based on specific contexts or configurations.  
+See the [Generators Documentation](docs/generator.md) for more details.
 
-Formatters are responsible for modifying or formatting barcode data.
+### [Repositories](docs/repository.md)
+Repositories manage the persistence and retrieval of barcodes.  
+See the [Repositories Documentation](docs/repository.md) for more details.
 
-#### Example Usage
+### [Processors](docs/processor.md)
+Processors orchestrate the interaction between all components, providing a unified interface for barcode operations.  
+See the [Processors Documentation](docs/processor.md) for more details.
+
+---
+
+## 6. Extending the Library
+
+The library is designed to be extensible. You can add custom formatters, encoders, decoders, and processors by implementing the respective interfaces.  
+Refer to the [Extending Documentation](docs) for detailed guides on how to extend each component.
+
+---
+
+## 7. Customization
+
+You can customize the library by:
+- Adding custom formatters, encoders, decoders, or generators.
+- Creating custom processors to handle specific workflows.
+- Implementing your own repository for barcode storage (e.g., database-backed).
+
+---
+
+## 8. Examples
+
+### Generate and Encode a Barcode
 
 ```php
-use Nkamuo\Barcode\Formatter\ChainBarcodeFormatter;
-
-$formatter = $container->get(ChainBarcodeFormatter::class);
-$formatted = $formatter->format("Some Data", ["option1" => true]);
+$barcode = $processor->generate(['type' => 'GTIN', 'value' => '0123456789012']);
+$encoded = $processor->encode($barcode, 'QR', 'PNG');
+file_put_contents('barcode.png', $encoded);
 ```
 
-> You can extend formatters by tagging your custom services with `barcode.formatter`.
-
-### Encoders
-
-Encoders convert raw data into barcodes or QR codes. You can use multiple encoders in chainable workflows.
-
-#### Example Usage
+### Decode a Barcode
 
 ```php
-use Nkamuo\Barcode\Encoder\ChainBarcodeEncoder;
-
-$encoder = $container->get(ChainBarcodeEncoder::class);
-$encodedData = $encoder->encode("Some Data");
+$decodedBarcode = $processor->decode('0101234567890128', 'EAN-13');
+echo $decodedBarcode->getValue();
 ```
 
-Encoders are tagged with `barcode.encoder`.
-
-### Decoders
-
-Decoders recognize and extract information from barcodes or QR codes.
-
-#### Example Usage
+### Format a Barcode
 
 ```php
-use Nkamuo\Barcode\Decoder\ChainBarcodeDecoder;
-
-$decoder = $container->get(ChainBarcodeDecoder::class);
-$decoded = $decoder->decode($barcodeData);
-```
-
-Decoders are tagged with `barcode.decoder`.
-
-### Generators
-
-Generators are responsible for creating visual representations of barcodes or QR codes.
-
-#### Example Usage
-
-```php
-use Nkamuo\Barcode\Generator\BarcodeGenerator;
-
-$generator = $container->get(BarcodeGenerator::class);
-$image = $generator->generate('Some Data', ['size' => 200, 'type' => 'qrcode']);
+$formatted = $formatter->format($barcode, 'LABEL');
+echo $formatted;
 ```
 
 ---
 
-## 5. Extending the Library
+## 9. Testing
 
-The library uses Symfony's tagged service system to allow easy extension of formatters, encoders, decoders, and processors.
-
-### Adding a Custom Formatter
-
-Create a new formatter that implements `FormatterInterface`:
-
-```php
-namespace App\Formatter;
-
-use Nkamuo\Barcode\Formatter\FormatterInterface;
-
-class CustomFormatter implements FormatterInterface
-{
-    public function format(string $data, array $context = []): string
-    {
-        // Custom formatting logic
-        return strtoupper($data);
-    }
-}
-```
-
-Register your formatter in the service container:
-
-```yaml
-# config/services.yaml
-services:
-    App\Formatter\CustomFormatter:
-        tags:
-            - { name: 'barcode.formatter', processor: 'default' }
-```
-
----
-
-## 6. Testing
-
-The library includes unit tests located in the `tests/simple` folder. These tests cover all core functionality, such as formatters, encoders, and decoders.
-
-### Running Tests
-
-To run the tests, execute:
+Run the tests using PHPUnit:
 
 ```bash
 composer install
 vendor/bin/phpunit tests/simple
 ```
 
-#### Example Test File
+---
 
-Here is an example of a simple test for a formatter:
+## 10. Contributing
 
-```php
-<?php
+Contributions are welcome! Please follow these steps:
+1. Fork the repository.
+2. Create a new branch for your feature or bugfix.
+3. Write tests for your changes.
+4. Open a pull request.
 
-namespace Tests\Simple;
-
-use Nkamuo\Barcode\Formatter\ChainBarcodeFormatter;
-use PHPUnit\Framework\TestCase;
-
-class ChainBarcodeFormatterTest extends TestCase
-{
-    public function testFormatterWorksCorrectly(): void
-    {
-        $formatter = new ChainBarcodeFormatter();
-        $result = $formatter->format('test-data');
-
-        $this->assertEquals('test-data', $result);
-    }
-}
-```
+Feel free to open issues for bugs or feature requests.
 
 ---
 
-## 7. Compiler Pass
+## 11. Credits
 
-The library includes a custom Symfony compiler pass (`BarcodeChainCompilerPass`) to dynamically collect and inject tagged services (formatters, encoders, etc.) into their respective chain services.
-
-### Example Compiler Pass Setup
-
-The compiler pass dynamically injects services tagged with `barcode.{type}` into the relevant chain class, such as `ChainBarcodeFormatter` or `ChainBarcodeEncoder`.
-
-Example tags include:
-- `barcode.formatter`
-- `barcode.encoder`
-- `barcode.decoder`
+This library leverages the following third-party libraries:
+- [chillerlan/php-qrcode](https://github.com/chillerlan/php-qrcode)
+- [picqer/php-barcode-generator](https://github.com/picqer/php-barcode-generator)
+- [endroid/qr-code](https://github.com/endroid/qr-code)
 
 ---
 
-## 8. Contributing
+## 12. License
 
-Contributions are welcome! Follow these steps to contribute to the project:
-
-1. Fork the repository on GitHub.
-2. Clone your forked repository:
-
-   ```bash
-   git clone https://github.com/your-username/barcode-bundle.git
-   cd barcode-bundle
-   ```
-
-3. Create a new branch:
-
-   ```bash
-   git checkout -b my-feature
-   ```
-
-4. Make your changes, write tests, and commit them.
-5. Push your branch and open a pull request.
-
-We follow the PSR-12 coding standard.
+This library is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for more details.
 
 ---
-
-## License
-
-This barcode library is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for more details.
-
----
-
-### Final Notes
-
-This library provides an extensible way to manage barcodes in Symfony applications, leveraging the full power of Symfony's service container and tagged services system to ensure flexibility. If you encounter any issues, please open an issue on GitHub.
 
 Enjoy using the Barcode Bundle! 😊
