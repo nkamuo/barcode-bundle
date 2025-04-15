@@ -229,8 +229,15 @@ file_put_contents('barcode.png', $encoded);
 ### Decode a Barcode
 
 ```php
-$decodedBarcode = $processor->decode('0101234567890128', 'EAN-13');
-echo $decodedBarcode->getValue();
+$decodedBarcode = $processor->decode(
+    data: ']d201034531200000111719112510ABCD1234',
+    symbol: null, //DataMatrix
+    format: null,
+    context: ['standard' => 'GS1']
+);
+echo $barcode->getAttribute('01');// Output: 03453120000011 [GTIN]
+echo $barcode->getAttribute('10');// Output:  ABCD1234 [Batch Number]
+echo $barcode->getAttribute('17');// Output:  191125 [Expiry Date]
 ```
 
 ### Format a Barcode
