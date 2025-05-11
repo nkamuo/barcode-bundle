@@ -69,10 +69,10 @@ class SequenceGenerator implements SequenceGeneratorInterface
 
 
     protected function resolveSequenceKey(array $context = []): string{
-        return $context['prefix'] ?? 'sequence_number';
+        return $context['scope'] ?? $context['prefix'] ?? 'sequence_number';
     }
 
-    protected function resolveNext(string|int $current = null, array $context = []): string|int
+    protected function resolveNext(string|int|null $current = null, array $context = []): string|int
     {
         if($current !== null) {
             $_current = (int)$current;
