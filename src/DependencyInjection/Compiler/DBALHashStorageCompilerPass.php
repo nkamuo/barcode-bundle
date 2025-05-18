@@ -28,12 +28,16 @@ class DBALHashStorageCompilerPass implements CompilerPassInterface
             $definition = $container->setDefinition(self::HASH_STORAGE_SERVICE_ID, new Definition());
         }
 
+
+        $tableName = 'nkamuo_barcode_hash_table';
+        $container->setParameter('nkamuo.storage.hash.table_name', $tableName);
+
         if($container->hasDefinition(self::DOCTRINE_DBAL_CONNECTION_SERVICE_ID)){
             $ref = new Reference(self::DOCTRINE_DBAL_CONNECTION_SERVICE_ID);
             $definition
                 ->setClass(DBALHashStorage::class)
                 ->setArgument('$connection', $ref)
-                ->setArgument('$tableName', 'nkamuo_barcode_hash_table')
+                ->setArgument('$tableName',$tableName )
                 ->setArgument('$autoCreateTable', true)
             ;
         }
