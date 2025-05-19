@@ -4,10 +4,11 @@ namespace Nkamuo\Barcode\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 
-class BarcodeExtension extends Extension
+class BarcodeExtension extends Extension implements PrependExtensionInterface
 {
     /**
      * Loads bundle configuration and services.
@@ -47,7 +48,7 @@ class BarcodeExtension extends Extension
 
             // Prepend the schema_filter config to doctrine
             $container->prependExtensionConfig('doctrine', [
-                'orm' => [
+                'dbals' => [
                     'schema_filter' => $pattern,
                 ]
             ]);
