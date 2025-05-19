@@ -48,7 +48,7 @@ class BarcodeExtension extends Extension implements PrependExtensionInterface
 
             // Prepend the schema_filter config to doctrine
             $container->prependExtensionConfig('doctrine', [
-                'dbals' => [
+                'dbal' => [
                     'schema_filter' => $pattern,
                 ]
             ]);
