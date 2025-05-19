@@ -9,9 +9,9 @@ class ComposerStaticInitf23edb42c89f02ec3cbd882b0a8ee5fc
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '662a729f963d39afe703c9d9b7ab4a8c' => __DIR__ . '/..' . '/symfony/polyfill-php83/bootstrap.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
-        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -26,9 +26,11 @@ class ComposerStaticInitf23edb42c89f02ec3cbd882b0a8ee5fc
             'Symfony\\Component\\VarDumper\\' => 28,
             'Symfony\\Component\\HttpKernel\\' => 29,
             'Symfony\\Component\\HttpFoundation\\' => 33,
+            'Symfony\\Component\\Filesystem\\' => 29,
             'Symfony\\Component\\EventDispatcher\\' => 34,
             'Symfony\\Component\\ErrorHandler\\' => 31,
             'Symfony\\Component\\DependencyInjection\\' => 38,
+            'Symfony\\Component\\Config\\' => 25,
         ),
         'P' => 
         array (
@@ -99,6 +101,10 @@ class ComposerStaticInitf23edb42c89f02ec3cbd882b0a8ee5fc
         array (
             0 => __DIR__ . '/..' . '/symfony/http-foundation',
         ),
+        'Symfony\\Component\\Filesystem\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/filesystem',
+        ),
         'Symfony\\Component\\EventDispatcher\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/event-dispatcher',
@@ -110,6 +116,10 @@ class ComposerStaticInitf23edb42c89f02ec3cbd882b0a8ee5fc
         'Symfony\\Component\\DependencyInjection\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/dependency-injection',
+        ),
+        'Symfony\\Component\\Config\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/config',
         ),
         'Psr\\Log\\' => 
         array (

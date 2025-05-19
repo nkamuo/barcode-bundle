@@ -3,7 +3,7 @@
         'name' => 'nkamuo/barcode-bundle',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'c1d280f58564b6afd7fc2ec543d6f458a92b8da3',
+        'reference' => '95d47a795aa6fc7a425de33d9176ef33ece1655d',
         'type' => 'symfony-bundle',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(
@@ -69,7 +69,7 @@
         'nkamuo/barcode-bundle' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'c1d280f58564b6afd7fc2ec543d6f458a92b8da3',
+            'reference' => '95d47a795aa6fc7a425de33d9176ef33ece1655d',
             'type' => 'symfony-bundle',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(
@@ -140,6 +140,15 @@
                 0 => '1.0|2.0|3.0',
             ),
         ),
+        'symfony/config' => array(
+            'pretty_version' => 'v7.2.6',
+            'version' => '7.2.6.0',
+            'reference' => 'e0b050b83ba999aa77a3736cb6d5b206d65b9d0d',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/config',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'symfony/dependency-injection' => array(
             'pretty_version' => 'v7.2.5',
             'version' => '7.2.5.0',
@@ -190,6 +199,15 @@
             'provided' => array(
                 0 => '2.0|3.0',
             ),
+        ),
+        'symfony/filesystem' => array(
+            'pretty_version' => 'v7.2.0',
+            'version' => '7.2.0.0',
+            'reference' => 'b8dce482de9d7c9fe2891155035a7248ab5c7fdb',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/filesystem',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'symfony/http-foundation' => array(
             'pretty_version' => 'v7.2.5',

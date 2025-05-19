@@ -17,7 +17,8 @@
         "symfony/dependency-injection": "^7",
         "symfony/http-kernel": "^7",
         "lamoda/gs1-barcode-parser": "^1.1",
-        "doctrine/dbal": "*"
+        "doctrine/dbal": "*",
+        "symfony/config": "^7.2"
     },
     "autoload": {
         "psr-4": {
