@@ -156,15 +156,22 @@ class DBALHashStorage implements HashStorageInterface
      */
     private function createTableIfNotExists(): void
     {
-        $schemaManager = $this->connection->createSchemaManager();
-        if (!$schemaManager->tablesExist([$this->tableName])) {
+        $tableName = $this->tableName;
+    
+        $exists = (bool) $this->connection->fetchOne(
+            "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = :table",
+            ['table' => $tableName]
+        );
+    
+        if (!$exists) {
             $this->connection->executeStatement(sprintf(
                 'CREATE TABLE %s (
                     `key` VARCHAR(255) NOT NULL PRIMARY KEY,
                     `value` TEXT NOT NULL
                 )',
-                $this->tableName
+                $tableName
             ));
         }
     }
+    
 }
