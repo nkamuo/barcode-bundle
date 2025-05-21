@@ -18,7 +18,7 @@
         "symfony/http-kernel": "^7",
         "lamoda/gs1-barcode-parser": "^1.1",
         "doctrine/dbal": "*",
-        "symfony/config": "^7.2"
+        "symfony/config": "^7"
     },
     "autoload": {
         "psr-4": {
