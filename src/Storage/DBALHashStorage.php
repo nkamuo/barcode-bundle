@@ -19,14 +19,12 @@ class DBALHashStorage implements HashStorageInterface
      * @param bool $autoCreateTable Whether to create the table if it doesn't exist.
      * @throws Exception
      */
-    public function __construct(Connection $connection, array $config = [],  string $tableName = 'barcode_hash_table', bool $autoCreateTable = true)
+    public function __construct(Connection $connection, array $config = [], string $tableName = 'barcode_hash_table', bool $autoCreateTable = true)
     {
-        $this->connection = $connection;//DriverManager::getConnection($dbConfig);
+        $this->connection = $connection;
         $this->tableName = $tableName;
         $this->autoCreateTable = $autoCreateTable;
-
     }
-
 
     /**
      * Get a value by its key.
@@ -38,11 +36,14 @@ class DBALHashStorage implements HashStorageInterface
     public function get(string $key): mixed
     {
         $this->ensureTableExists();
-        $result = $this->connection->fetchOne(
-            sprintf('SELECT value FROM %s WHERE `key` = ?', $this->tableName),
-            [$key]
+        $platform = $this->connection->getDatabasePlatform();
+        $sql = sprintf(
+            'SELECT %s FROM %s WHERE %s = ?',
+            $platform->quoteIdentifier('value'),
+            $platform->quoteIdentifier($this->tableName),
+            $platform->quoteIdentifier('key')
         );
-
+        $result = $this->connection->fetchOne($sql, [$key]);
         return $result !== false ? json_decode($result, associative: true) : null;
     }
 
@@ -57,13 +58,31 @@ class DBALHashStorage implements HashStorageInterface
     public function set(string $key, mixed $value): void
     {
         $this->ensureTableExists();
-        $this->connection->executeStatement(
-            sprintf(
-                'REPLACE INTO %s (`key`, `value`) VALUES (?, ?)',
-                $this->tableName
-            ),
-            [$key, json_encode($value)]
-        );
+        $platform = $this->connection->getDatabasePlatform();
+        $table = $platform->quoteIdentifier($this->tableName);
+        $keyCol = $platform->quoteIdentifier('key');
+        $valueCol = $platform->quoteIdentifier('value');
+
+        if ($platform instanceof PostgreSQLPlatform) {
+            $sql = sprintf(
+                'INSERT INTO %s (%s, %s) VALUES (?, ?) ON CONFLICT (%s) DO UPDATE SET %s = EXCLUDED.%s',
+                $table,
+                $keyCol,
+                $valueCol,
+                $keyCol,
+                $valueCol,
+                $valueCol
+            );
+        } else {
+            // MySQL and SQLite support REPLACE INTO
+            $sql = sprintf(
+                'REPLACE INTO %s (%s, %s) VALUES (?, ?)',
+                $table,
+                $keyCol,
+                $valueCol
+            );
+        }
+        $this->connection->executeStatement($sql, [$key, json_encode($value)]);
     }
 
     /**
@@ -76,11 +95,13 @@ class DBALHashStorage implements HashStorageInterface
     public function delete(string $key): bool
     {
         $this->ensureTableExists();
-        $count = $this->connection->executeStatement(
-            sprintf('DELETE FROM %s WHERE `key` = ?', $this->tableName),
-            [$key]
+        $platform = $this->connection->getDatabasePlatform();
+        $sql = sprintf(
+            'DELETE FROM %s WHERE %s = ?',
+            $platform->quoteIdentifier($this->tableName),
+            $platform->quoteIdentifier('key')
         );
-
+        $count = $this->connection->executeStatement($sql, [$key]);
         return $count > 0;
     }
 
@@ -94,11 +115,13 @@ class DBALHashStorage implements HashStorageInterface
     public function has(string $key): bool
     {
         $this->ensureTableExists();
-        $result = $this->connection->fetchOne(
-            sprintf('SELECT 1 FROM %s WHERE `key` = ?', $this->tableName),
-            [$key]
+        $platform = $this->connection->getDatabasePlatform();
+        $sql = sprintf(
+            'SELECT 1 FROM %s WHERE %s = ?',
+            $platform->quoteIdentifier($this->tableName),
+            $platform->quoteIdentifier('key')
         );
-
+        $result = $this->connection->fetchOne($sql, [$key]);
         return $result !== false;
     }
 
@@ -111,9 +134,14 @@ class DBALHashStorage implements HashStorageInterface
     public function all(): array
     {
         $this->ensureTableExists();
-        $result = $this->connection->fetchAllAssociative(
-            sprintf('SELECT `key`, `value` FROM %s', $this->tableName)
+        $platform = $this->connection->getDatabasePlatform();
+        $sql = sprintf(
+            'SELECT %s, %s FROM %s',
+            $platform->quoteIdentifier('key'),
+            $platform->quoteIdentifier('value'),
+            $platform->quoteIdentifier($this->tableName)
         );
+        $result = $this->connection->fetchAllAssociative($sql);
 
         $data = [];
         foreach ($result as $row) {
@@ -132,11 +160,10 @@ class DBALHashStorage implements HashStorageInterface
     public function clear(): void
     {
         $this->ensureTableExists();
-        $this->connection->executeStatement(
-            sprintf('DELETE FROM %s', $this->tableName)
-        );
+        $platform = $this->connection->getDatabasePlatform();
+        $sql = sprintf('DELETE FROM %s', $platform->quoteIdentifier($this->tableName));
+        $this->connection->executeStatement($sql);
     }
-
 
     /**
      * @throws Exception
@@ -154,7 +181,7 @@ class DBALHashStorage implements HashStorageInterface
      * @return void
      * @throws Exception
      */
-   private function createTableIfNotExists(): void
+    private function createTableIfNotExists(): void
     {
         $tableName = $this->tableName;
         $platform = $this->connection->getDatabasePlatform();
@@ -167,11 +194,13 @@ class DBALHashStorage implements HashStorageInterface
             );
             if (!$exists) {
                 $this->connection->executeStatement(sprintf(
-                    'CREATE TABLE "%s" (
-                        "key" VARCHAR(255) PRIMARY KEY,
-                        "value" TEXT NOT NULL
+                    'CREATE TABLE %s (
+                        %s VARCHAR(255) PRIMARY KEY,
+                        %s TEXT NOT NULL
                     )',
-                    $tableName
+                    $platform->quoteIdentifier($tableName),
+                    $platform->quoteIdentifier('key'),
+                    $platform->quoteIdentifier('value')
                 ));
             }
         } else {
@@ -183,13 +212,14 @@ class DBALHashStorage implements HashStorageInterface
             if (!$exists) {
                 $this->connection->executeStatement(sprintf(
                     'CREATE TABLE %s (
-                        `key` VARCHAR(255) NOT NULL PRIMARY KEY,
-                        `value` TEXT NOT NULL
+                        %s VARCHAR(255) NOT NULL PRIMARY KEY,
+                        %s TEXT NOT NULL
                     )',
-                    $tableName
+                    $platform->quoteIdentifier($tableName),
+                    $platform->quoteIdentifier('key'),
+                    $platform->quoteIdentifier('value')
                 ));
             }
         }
     }
-    
 }
